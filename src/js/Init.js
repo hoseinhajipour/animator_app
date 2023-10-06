@@ -130,7 +130,6 @@ const createScene = function (laoadformurl = null) {
     return scene;
 };
 
-
 var scene = createScene(); //Call the createScene function
 if (load_from_url) {
     BABYLON.SceneLoader.Append("", load_from_url, this.scene, (objectData) => {

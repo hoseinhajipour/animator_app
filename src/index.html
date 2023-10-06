@@ -47,7 +47,10 @@
         <canvas id="renderCanvas"></canvas>
     </div>
     <div class="col-3 resizable-panel">
-        <input type="file" id="modelFileInput">
+        <input type="file" id="modelFileInput" style="display: none;">
+        <button id="importButton" >Import Model</button>
+
+
         <div data-include="Inspector"></div>
     </div>
 </div>
@@ -57,7 +60,7 @@
 <script src="./renderer.js"></script>
 
 <script src="./js/Init.js"></script>
-
+<script src="./js/MainMenu.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -77,6 +80,10 @@
             minHeight: 300,  // Set minimum height
             maxHeight: 900   // Set maximum height
         });
+
+
+        const importButton = document.getElementById('importButton');
+        importButton.addEventListener('click', ImportModel);
     });
 </script>
 

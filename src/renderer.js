@@ -1,8 +1,5 @@
 const { ipcRenderer } = require('electron');
 
-
-
-
 document.getElementById('runButton').addEventListener('click', () => {
   ipcRenderer.send('run-command');
 });

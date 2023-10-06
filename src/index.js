@@ -1,11 +1,13 @@
-const {app, BrowserWindow, ipcMain, Menu} = require('electron');
+const {app, BrowserWindow, ipcMain, Menu, contextBridge, ipcRenderer, dialog} = require('electron');
 const {spawn} = require('child_process');
 const path = require('path');
+const {ExportScene} = require('./js/MainMenu');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
     app.quit();
 }
+
 
 const createWindow = () => {
     // Create the browser window.
@@ -18,7 +20,6 @@ const createWindow = () => {
             preload: path.join(__dirname, 'preload.js'),
         },
     });
-
 
 
     const template = [
@@ -37,6 +38,20 @@ const createWindow = () => {
                     accelerator: 'CmdOrCtrl+O',
                     click: () => {
                         // Logic for open file action
+                    }
+                },
+                {
+                    label: 'Import',
+                    accelerator: 'CmdOrCtrl+I',
+                    click: () => {
+                        mainWindow.webContents.executeJavaScript(" ImportModel();");
+                    }
+                },
+                {
+                    label: 'Export',
+                    accelerator: 'CmdOrCtrl+E',
+                    click: () => {
+                        mainWindow.webContents.executeJavaScript("ExportScene();");
                     }
                 },
                 {
@@ -70,6 +85,40 @@ const createWindow = () => {
                     role: 'paste'
                 }
             ]
+        },
+        {
+            label: 'Create',
+            submenu: [
+                {
+                    label: 'Cube',
+                    click: () => {
+                        mainWindow.webContents.executeJavaScript("AddCube();");
+                    }
+                },
+                {
+                    label: 'Camera',
+                    click: () => {
+                        mainWindow.webContents.executeJavaScript("AddCamera();");
+                    }
+                }
+            ]
+        },
+        {
+            label: 'Render',
+            submenu: [
+                {
+                    label: 'Render Video',
+                    click: () => {
+                        mainWindow.webContents.executeJavaScript("RenderMovie();");
+                    }
+                },
+                {
+                    label: 'Render Image',
+                    click: () => {
+
+                    }
+                }
+            ]
         }
     ];
 
@@ -78,7 +127,6 @@ const createWindow = () => {
 
     // and load the index.html of the app.
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
-
 
 
     // Open the DevTools.
