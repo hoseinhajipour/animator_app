@@ -1,7 +1,6 @@
 const {app, BrowserWindow, ipcMain, Menu} = require('electron');
 const {spawn} = require('child_process');
 const path = require('path');
-const electronReload = require('electron-reload');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {

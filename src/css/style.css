@@ -1,14 +1,12 @@
-.height_ctrl {
-    height: 60vh;
-    overflow-y: auto;
+body {
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: #1e1e1e !important;
+    color: white !important;
+    overflow: hidden;
 }
-
-.ObjectSelect {
-    background-color: white;
-    color: black;
-    padding: 5px;
-}
-
 
 .app-container {
     background-color: #1e1e1e;
@@ -62,6 +60,7 @@ main {
 .button:focus {
     outline: 0;
     border: none;
+
 }
 
 .button:hover {
@@ -79,10 +78,10 @@ main {
     grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
-.timeline_Area {
+footer {
     display: flex;
-    width: 100vw;
-    height: 100%;
+    height: 45%;
+    max-height: 70%;
 }
 
 .toolbar {
@@ -152,86 +151,22 @@ a {
     height: 100%;
     align-items: stretch;
     align-content: stretch;
+    background-color: black;
 }
 
 .content {
     overflow: scroll;
 }
 
-.no_link {
-    text-decoration: none;
+#timeline_area {
+    position: fixed;
+    width: 100vw;
+    bottom: 0;
+    left: 0;
+    height: 40vh;
 }
 
-/***********************************************/
-/* Remove default bullets */
-ul, #myUL {
-    list-style-type: none;
-}
-
-/* Remove margins and padding from the parent ul */
-#myUL {
-    margin: 0;
-    padding: 0;
-}
-
-/* Style the caret/arrow */
-.caret {
-    cursor: pointer;
-    user-select: none; /* Prevent text selection */
-}
-
-/* Create the caret/arrow with a unicode, and style it */
-.caret::before {
-    content: "\25B6";
-    color: black;
-    display: inline-block;
-    margin-right: 6px;
-}
-
-/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
-.caret-down::before {
-    transform: rotate(90deg);
-}
-
-/* Hide the nested list */
-.nested {
-    display: none;
-}
-
-/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
-.sub_active {
-    display: block;
-}
-
-.folder {
-    cursor: pointer;
-}
-
-.folder_active {
-    color: black;
-    background-color: white;
-    user-select: none; /* Prevent text selection */
-}
-
-
-.dialog_row {
-    border: 1px solid black;
-    margin-top: 10px;
-    border-radius: 3px;
-    padding: 5px;
-}
-
-
-#objectList ul ul {
-    display: none;
-}
-
-/* Style the plus and minus icons */
-#objectList li:before {
-    content: "+";
-    cursor: pointer;
-}
-
-#objectList li.active:before {
-    content: "-";
+#renderCanvas{
+    width: 100%;
+    height: 60vh;
 }

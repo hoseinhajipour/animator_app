@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8"/>
@@ -7,43 +7,71 @@
     <link rel="stylesheet" href="index.css"/>
 
 
-    <script src="js/lib/babylon.js"></script>
-    <script src="js/lib/babylonjs.loaders.min.js"></script>
-    <script src="js/lib/babylon.inspector.bundle.js"></script>
-    <script src="js/lib/babylon.viewer.js"></script>
-    <script src="js/lib/babylonjs.materials.js"></script>
-    <script src="js/lib/babylon.gui.min.js"></script>
-    <script src="js/lib/babylonjs.serializers.min.js"></script>
-    <script src="js/lib/babylonjs.postProcess.min.js"></script>
-    <script src="js/lib/babylonjs.proceduralTextures.min.js"></script>
+    <script src="./js/lib/babylon.js"></script>
+    <script src="./js/lib/babylonjs.loaders.min.js"></script>
+    <script src="./js/lib/babylon.inspector.bundle.js"></script>
+    <script src="./js/lib/babylon.viewer.js"></script>
+    <script src="./js/lib/babylonjs.materials.js"></script>
+    <script src="./js/lib/babylon.gui.min.js"></script>
+    <script src="./js/lib/babylonjs.serializers.min.js"></script>
+    <script src="./js/lib/babylonjs.postProcess.min.js"></script>
+    <script src="./js/lib/babylonjs.proceduralTextures.min.js"></script>
 
 
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
 
-    <link rel="stylesheet" href="css/style.css">
-    <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
 
-    <link rel="stylesheet" href="css/jquery-ui.css">
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/bootstrap.bundle.js"></script>
+
 
     <script>window.$ = window.jQuery = require('jquery');</script>
 
-    <link href="css/google_font.css" rel="stylesheet"/>
-    <script src="animation-timeline-control/lib/animation-timeline.js"></script>
+    <link href="./css/google_font.css" rel="stylesheet"/>
+    <script src="./animation-timeline-control/lib/animation-timeline.js"></script>
 
 
+    <link rel="stylesheet" href="./css/jquery-ui.css">
+    <script src="./js/jquery-ui.js"></script>
 </head>
 
 <body>
 
-<canvas id="renderCanvas"></canvas>
+<div class="row">
+    <div class="col-3 resizable-panel">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="Hierarchy-tab" data-bs-toggle="tab" data-bs-target="#Hierarchy" type="button" role="tab" aria-controls="Hierarchy" aria-selected="true">Hierarchy</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="Hierarchy" role="tabpanel" aria-labelledby="Hierarchy-tab">Hierarchy</div>
+        </div>
+        
+    </div>
+    <div class="col-6 resizable-panel">
+        <canvas id="renderCanvas"></canvas>
+    </div>
+    <div class="col-3 resizable-panel">
 
-<div data-include="timeline"></div>
+        <ul class="nav nav-tabs w-100" id="myTab " role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="Inspector-tab" data-bs-toggle="tab" data-bs-target="#Inspector"
+                        type="button" role="tab" aria-controls="Inspector" aria-selected="true">Inspector</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContentInspector">
+            <div class="tab-pane fade show active" id="Inspector" role="tabpanel" aria-labelledby="Hierarchy-tab">Inspector ...</div>
+        </div>
+    </div>
+</div>
 
 
-<script src="renderer.js"></script>
+<div data-include="timeline" class="resizable-panel-timeline"></div>
+<script src="./renderer.js"></script>
 
-<script src="js/Init.js"></script>
-
+<script src="./js/Init.js"></script>
 
 
 <script>
@@ -53,6 +81,17 @@
             var file = "component/" + $(this).data('include') + '.html'
             $(this).load(file)
         })
+
+
+        $(".resizable-panel").resizable({
+            handles: "e",  // "e" for east (right) handle
+            minWidth: 100,  // Set minimum width
+        });
+        $(".resizable-panel-timeline").resizable({
+            handles: "s",  // "s" for south (bottom) handle
+            minHeight: 300,  // Set minimum height
+            maxHeight: 900   // Set maximum height
+        });
     });
 </script>
 
