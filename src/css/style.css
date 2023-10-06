@@ -23,7 +23,7 @@ body {
     box-sizing: border-box;
     flex-grow: 8;
     width: 100%;
-    height: 100%;
+    height: 40vh;
     scrollbar-color: gray #161616;
 }
 

@@ -1,9 +1,49 @@
 <ul class="nav nav-tabs w-100" id="myTab " role="tablist">
-  <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="Inspector-tab" data-bs-toggle="tab" data-bs-target="#Inspector"
-            type="button" role="tab" aria-controls="Inspector" aria-selected="true">Inspector</button>
-  </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="Inspector-tab" data-bs-toggle="tab" data-bs-target="#Inspector"
+                type="button" role="tab" aria-controls="Inspector" aria-selected="true">Inspector
+        </button>
+    </li>
 </ul>
 <div class="tab-content" id="myTabContentInspector">
-  <div class="tab-pane fade show active" id="Inspector" role="tabpanel" aria-labelledby="Hierarchy-tab">Inspector ...</div>
+    <div class="tab-pane fade show active" id="Inspector" role="tabpanel" aria-labelledby="Hierarchy-tab">
+
+        <input type="file" id="audioFile" accept="audio/*">
+        <div id="transcriptionResult"></div>
+
+        <script>
+            document.getElementById('audioFile').addEventListener('change', handleAudioFile);
+
+            function handleAudioFile(event) {
+                const audioFile = event.target.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function (event) {
+                    const audioBlob = event.target.result;
+                    transcribeAudio(audioBlob);
+                };
+
+                reader.readAsArrayBuffer(audioFile);
+            }
+
+            function transcribeAudio(audioBlob) {
+                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = 'en-US'; // Set the language for recognition
+
+                recognition.onresult = function (event) {
+                    const transcription = event.results[0][0].transcript;
+                    document.getElementById('transcriptionResult').innerText = transcription;
+                };
+
+                recognition.onerror = function (event) {
+                    console.error('Error occurred in recognition: ', event.error);
+                };
+
+                // Start speech recognition with the audio buffer directly
+                recognition.start();
+            }
+
+        </script>
+
+    </div>
 </div>

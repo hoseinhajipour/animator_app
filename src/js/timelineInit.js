@@ -2,7 +2,7 @@ var outlineContainer = document.getElementById('outline-container');
 playing = false;
 playStep = 60;
 
-var frameRate=60;
+var frameRate = 60;
 // Automatic tracking should be turned off when user interaction happened.
 trackTimelineMovement = false;
 var endFrame = 0;
@@ -10,8 +10,51 @@ var endFrame = 0;
 function generateModel() {
     let rows = [
         {
-            title: 'Camera',
-            keyframes: [],
+            title: 'Viseme',
+            keyframes: [
+                {
+                    val: 0,
+                    shape: 'rhomb',
+                    type: 'Viseme',
+                    value: "a"
+                },
+            ],
+        },
+        {
+            title: 'Expression',
+            keyframes: [
+                {
+                    val: 0,
+                    shape: 'rhomb',
+                    type: 'Expression',
+                    value: "happy"
+                },
+            ],
+        },
+        {
+            title: 'HeadLookAt',
+            keyframes: [
+
+                {
+                    val: 0,
+                    shape: 'rhomb',
+                    type: 'HeadLookAt',
+                    // value: new BABYLON.Vector3(0, 0, 0)
+                }
+
+
+            ],
+        },
+        {
+            title: 'BodyAnimation',
+            keyframes: [
+                {
+                    val: 0,
+                    shape: 'rhomb',
+                    type: 'BodyAnimation',
+                    value: "walk"
+                }
+            ],
         },
     ];
     return rows;
@@ -19,8 +62,8 @@ function generateModel() {
 
 const rows = generateModel();
 var timeline = new timelineModule.Timeline();
-timeline.initialize({ id: 'timeline', headerHeight: 45 });
-timeline.setModel({ rows: rows });
+timeline.initialize({id: 'timeline', headerHeight: 45});
+timeline.setModel({rows: rows});
 
 // Select all elements on key down
 document.addEventListener('keydown', function (args) {
@@ -74,7 +117,7 @@ function onStopClick() {
 
     playing = false;
     if (timeline) {
-        timeline.setOptions({ timelineDraggable: true });
+        timeline.setOptions({timelineDraggable: true});
     }
 
     //     console.log(scene._mainSoundTrack.soundCollection);
@@ -100,6 +143,13 @@ function showActivePositionInformation() {
 }
 
 timeline.onSelected(function (obj) {
+    console.log(obj);
+
+
+    if (obj.selected[0].type && obj.selected[0].type === "Viseme") {
+        console.log(obj.selected[0].type);
+        console.log("open dialog")
+    }
     //   logMessage('Selected Event: (' + obj.selected.length + '). changed selection :' + obj.changed.length, 2);
 });
 timeline.onDragStarted(function (obj) {
@@ -232,7 +282,7 @@ function addKeyframe() {
     if (timeline) {
         // Add keyframe
         const currentModel = timeline.getModel();
-        currentModel.rows.push({ keyframes: [{ val: timeline.getTime() }] });
+        currentModel.rows.push({keyframes: [{val: timeline.getTime()}]});
         timeline.setModel(currentModel);
 
         // Generate outline list menu
@@ -261,7 +311,7 @@ function onPlayClick(event) {
         this.moveTimelineIntoTheBounds();
         // Don't allow to manipulate timeline during playing (optional).
 
-        timeline.setOptions({ timelineDraggable: false });
+        timeline.setOptions({timelineDraggable: false});
 
         var animationGroups = scene.animationGroups;
         animationGroups.forEach(group => {
@@ -280,7 +330,7 @@ function onPlayClick(event) {
 function onPauseClick(event) {
     playing = false;
     if (timeline) {
-        timeline.setOptions({ timelineDraggable: true });
+        timeline.setOptions({timelineDraggable: true});
         var animationGroups = scene.animationGroups;
         animationGroups.forEach(group => {
             group.stop();
