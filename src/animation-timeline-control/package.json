@@ -1,0 +1,61 @@
+{
+  "name": "animation-timeline-js",
+  "version": "2.3.0",
+  "description": "animation timeline control based on the canvas.",
+  "main": "lib/animation-timeline.min.js",
+  "types": "lib/animation-timeline.d.ts",
+  "devDependencies": {
+    "@babel/cli": "7.19.3",
+    "@babel/core": "7.20.5",
+    "@babel/plugin-proposal-class-properties": "7.18.6",
+    "@babel/preset-env": "7.20.2",
+    "@babel/preset-typescript": "7.18.6",
+    "@types/chai": "4.3.4",
+    "@types/mocha": "10.0.01",
+    "@typescript-eslint/eslint-plugin": "5.46.1",
+    "@typescript-eslint/parser": "5.46.1",
+    "babel-loader": "9.1.0",
+    "chai": "4.3.7",
+    "eslint": "8.30.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "mocha": "10.2.0",
+    "prettier": "2.8.1",
+    "ts-loader": "9.4.2",
+    "typescript": "4.9.4",
+    "webpack": "5.75.0",
+    "webpack-cli": "5.0.1"
+  },
+  "scripts": {
+    "start": "echo \"Run npm build and run index.html in your browser. You have to run build command every time files are changed.\" && exit 1",
+    "test": "echo \"Run tests/unittest.html explicitly to execute tests. Build after files are changed.\" && exit 1",
+    "build-ts-def": "tsc -emitDeclarationOnly",
+    "build": "webpack && npm run build-ts-def && npm run build-tests",
+    "lint": "eslint --ext .ts,.html src --ignore-path .gitignore && prettier \"src/*.ts\" --check --ignore-path .gitignore",
+    "webpack": "npm run build",
+    "build-tests": "tsc -p tsconfig.tests.json",
+    "format": "prettier --write src/**/*.{ts,js,css,scss,html}",
+    "prettier": "prettier --check src/**/*.{ts,js,css,scss,html}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ievgennaida/js-animation-timeline-control.git"
+  },
+  "keywords": [
+    "js",
+    "animation",
+    "timeline",
+    "canvas",
+    "html5",
+    "no",
+    "libs",
+    "keyframes",
+    "editor"
+  ],
+  "author": "Ievgen Naida",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ievgennaida/js-animation-timeline-control/issues"
+  },
+  "homepage": "https://ievgennaida.github.io/animation-timeline-control/index.html"
+}

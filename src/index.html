@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>Hello World!</title>
+    <link rel="stylesheet" href="index.css"/>
+
+
+    <script src="js/lib/babylon.js"></script>
+    <script src="js/lib/babylonjs.loaders.min.js"></script>
+    <script src="js/lib/babylon.inspector.bundle.js"></script>
+    <script src="js/lib/babylon.viewer.js"></script>
+    <script src="js/lib/babylonjs.materials.js"></script>
+    <script src="js/lib/babylon.gui.min.js"></script>
+    <script src="js/lib/babylonjs.serializers.min.js"></script>
+    <script src="js/lib/babylonjs.postProcess.min.js"></script>
+    <script src="js/lib/babylonjs.proceduralTextures.min.js"></script>
+
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="css/jquery-ui.css">
+
+    <script>window.$ = window.jQuery = require('jquery');</script>
+
+    <link href="css/google_font.css" rel="stylesheet"/>
+    <script src="animation-timeline-control/lib/animation-timeline.js"></script>
+
+
+</head>
+
+<body>
+
+<canvas id="renderCanvas"></canvas>
+
+<div data-include="timeline"></div>
+
+
+<script src="renderer.js"></script>
+
+<script src="js/Init.js"></script>
+
+
+
+<script>
+    $(document).ready(function () {
+        var includes = $('[data-include]')
+        $.each(includes, function () {
+            var file = "component/" + $(this).data('include') + '.html'
+            $(this).load(file)
+        })
+    });
+</script>
+
+</body>
+
+</html>
