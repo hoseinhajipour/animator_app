@@ -53,6 +53,19 @@ const createScene = function (laoadformurl = null) {
         }
     });
 
+    var modelFileInput = document.getElementById('modelFileInput');
+    modelFileInput.addEventListener('change', function (event) {
+        var file = event.target.files[0];
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            var dataUrl = event.target.result;
+            BABYLON.SceneLoader.ImportMesh("", "", dataUrl, scene, function (meshes) {
+                // Callback function, do something with the loaded meshes if needed
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+
 
     shadowGenerator = new BABYLON.ShadowGenerator(2048, light);
 
