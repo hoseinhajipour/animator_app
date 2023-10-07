@@ -174,3 +174,9 @@ a {
 .active_outline {
     border: 3px solid #ff8c00;
 }
+
+.Inspector_limit{
+    height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

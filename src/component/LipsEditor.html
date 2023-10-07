@@ -77,53 +77,57 @@
                 // Handle click event for the lips element if needed
                 updateActiveButtonByName(name);
 
-                if (timeline) {
-                    const currentModel = timeline.getModel();
-                    // Find the 'Viseme' row in the current model
-                    const visemeRow = currentModel.rows.find(row => row.title === 'Viseme');
-                    var Expressiveness_range = parseInt(document.getElementById("Expressiveness_range").value) / 100;
-
-                    // If 'Viseme' row exists, check if a keyframe with the same 'val' property already exists
-                    if (visemeRow) {
-                        const existingKeyframeIndex = visemeRow.keyframes.findIndex(keyframe => keyframe.val === timeline.getTime());
-
-                        // If a keyframe with the same 'val' property exists, remove it
-                        if (existingKeyframeIndex !== -1) {
-                            visemeRow.keyframes.splice(existingKeyframeIndex, 1);
-                        }
-
-                        // Add the new keyframe to 'Viseme' row
-                        visemeRow.keyframes.push({
-                            val: timeline.getTime(),
-                            shape: 'rhomb',
-                            type: 'Viseme',
-                            value: name,
-                            expression: Expressiveness_range,
-                        });
-                    } else {
-                        // If 'Viseme' row doesn't exist, create a new one and add the keyframe
-                        currentModel.rows.push({
-                            title: 'Viseme',
-                            keyframes: [
-                                {
-                                    val: timeline.getTime(),
-                                    shape: 'rhomb',
-                                    type: 'Viseme',
-                                    value: name,
-                                    expression: Expressiveness_range,
-                                }
-                            ]
-                        });
-                    }
-
-                    timeline.setModel(currentModel);
-
-                    // Generate outline list menu
-                    generateHTMLOutlineListNodes(currentModel.rows);
-                }
+                addVisemeKeyframe(name);
             });
 
             return lipsRowSample;
+        }
+
+        function addVisemeKeyframe(name) {
+            if (timeline) {
+                const currentModel = timeline.getModel();
+                // Find the 'Viseme' row in the current model
+                const visemeRow = currentModel.rows.find(row => row.title === 'Viseme');
+                var Expressiveness_range = parseInt(document.getElementById("Expressiveness_range").value) / 100;
+
+                // If 'Viseme' row exists, check if a keyframe with the same 'val' property already exists
+                if (visemeRow) {
+                    const existingKeyframeIndex = visemeRow.keyframes.findIndex(keyframe => keyframe.val === timeline.getTime());
+
+                    // If a keyframe with the same 'val' property exists, remove it
+                    if (existingKeyframeIndex !== -1) {
+                        visemeRow.keyframes.splice(existingKeyframeIndex, 1);
+                    }
+
+                    // Add the new keyframe to 'Viseme' row
+                    visemeRow.keyframes.push({
+                        val: timeline.getTime(),
+                        shape: 'rhomb',
+                        type: 'Viseme',
+                        value: name,
+                        expression: Expressiveness_range,
+                    });
+                } else {
+                    // If 'Viseme' row doesn't exist, create a new one and add the keyframe
+                    currentModel.rows.push({
+                        title: 'Viseme',
+                        keyframes: [
+                            {
+                                val: timeline.getTime(),
+                                shape: 'rhomb',
+                                type: 'Viseme',
+                                value: name,
+                                expression: Expressiveness_range,
+                            }
+                        ]
+                    });
+                }
+
+                timeline.setModel(currentModel);
+
+                // Generate outline list menu
+                generateHTMLOutlineListNodes(currentModel.rows);
+            }
         }
 
         // Append lips elements to the lips_button div
@@ -140,6 +144,11 @@
         // Update number input when range input changes
         rangeInput.addEventListener("input", function () {
             numberInput.value = rangeInput.value;
+
+            var name = getCurrentViseme();
+            if(name){
+                addVisemeKeyframe(name);
+            }
         });
 
         // Update range input when number input changes
@@ -153,6 +162,25 @@
             }
             rangeInput.value = value;
             numberInput.value = value; // Update number input with sanitized value
+
+
+            var name = getCurrentViseme();
+            if(name){
+                addVisemeKeyframe(name);
+            }
         });
+
+
+        function getCurrentViseme() {
+            var activeButton = document.querySelector("#lips_button button.active_outline");
+            if (activeButton) {
+                var lipNameElement = activeButton.querySelector(".lip_name");
+                if (lipNameElement) {
+                    return lipNameElement.textContent;
+                }
+            }
+            return null; // Return null if no active button with class "active_outline" is found
+        }
+
     </script>
 </div>

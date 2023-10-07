@@ -11,8 +11,7 @@ function generateModel() {
     let rows = [
         {
             title: 'Viseme',
-            keyframes: [
-            ],
+            keyframes: [],
         },
         {
             title: 'Expression',
@@ -142,6 +141,12 @@ timeline.onSelected(function (obj) {
     if (obj.selected[0]) {
         if (obj.selected[0].type && obj.selected[0].type === "Viseme") {
             updateActiveButtonByName(obj.selected[0].value);
+
+            var rangeInput = document.getElementById("Expressiveness_range");
+            var numberInput = document.getElementById("Expressiveness_number");
+
+            rangeInput.value = obj.selected[0].expression * 100;
+            numberInput.value = obj.selected[0].expression * 100;
         }
     }
 });
