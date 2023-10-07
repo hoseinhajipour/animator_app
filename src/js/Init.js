@@ -10,10 +10,9 @@ var Maincamera;
 var frameRate = 60;
 var HighlightLayer;
 var boundingBoxGizmo;
-
-
 var load_from_url = null;
 
+var _HeadMesh;
 const createScene = function (laoadformurl = null) {
     const scene = new BABYLON.Scene(engine);
     Maincamera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 1, new BABYLON.Vector3(0, 0, 0), scene);
@@ -61,6 +60,10 @@ const createScene = function (laoadformurl = null) {
             var dataUrl = event.target.result;
             BABYLON.SceneLoader.ImportMesh("", "", dataUrl, scene, function (meshes) {
                 // Callback function, do something with the loaded meshes if needed
+
+
+           //     console.log(_HeadMesh);
+                updateObjectNamesFromScene();
             });
         };
         reader.readAsDataURL(file);

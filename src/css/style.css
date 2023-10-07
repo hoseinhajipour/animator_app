@@ -180,3 +180,9 @@ a {
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+.ObjectSelect {
+    background-color: white;
+    color: black;
+    padding: 5px;
+}

@@ -83,6 +83,33 @@
             return lipsRowSample;
         }
 
+        function mapPhoneme(phonemeContent) {
+            // Define a mapping object that associates phonemes with weights
+            // Define a mapping object that associates phonemes with weights
+            var phonemeWeightMapping = {
+                'Ah': 'viseme_aa',
+                'o': 'viseme_O',
+                'EE': 'viseme_E',
+                'w': 'viseme_U',
+                'i': 'viseme_I',
+                'k': 'viseme_kk',
+                'f': 'viseme_FF',
+                'n': 'viseme_nn',
+                'm': 'viseme_nn',
+                's': 'viseme_SS',
+                'ch': 'viseme_CH',
+                'c': 'viseme_CH',
+                'Th': 'viseme_TH',
+                'T_L_D': 'viseme_DD',
+                'y': 'viseme_SS',
+                'p': 'viseme_PP',
+                'z': 'viseme_E',
+            };
+
+            // Check if the phoneme is in the mapping, return default weight if not found
+            return phonemeWeightMapping[phonemeContent] || "viseme_sil";
+        }
+
         function addVisemeKeyframe(name) {
             if (timeline) {
                 const currentModel = timeline.getModel();
@@ -122,9 +149,16 @@
                         ]
                     });
                 }
-
                 timeline.setModel(currentModel);
 
+
+                HeadMesh.morphTargetManager._targets.forEach(target => {
+                    if (target.name === mapPhoneme(name)) {
+                        target.influence = Expressiveness_range;
+                    } else {
+                        target.influence = 0;
+                    }
+                })
                 // Generate outline list menu
                 generateHTMLOutlineListNodes(currentModel.rows);
             }
@@ -146,7 +180,7 @@
             numberInput.value = rangeInput.value;
 
             var name = getCurrentViseme();
-            if(name){
+            if (name) {
                 addVisemeKeyframe(name);
             }
         });
@@ -165,7 +199,7 @@
 
 
             var name = getCurrentViseme();
-            if(name){
+            if (name) {
                 addVisemeKeyframe(name);
             }
         });
