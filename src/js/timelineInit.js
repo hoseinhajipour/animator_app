@@ -145,12 +145,12 @@ function showActivePositionInformation() {
 timeline.onSelected(function (obj) {
     console.log(obj);
 
-
-    if (obj.selected[0].type && obj.selected[0].type === "Viseme") {
-        console.log(obj.selected[0].type);
-        console.log("open dialog")
+    if (obj.selected[0]) {
+        if (obj.selected[0].type && obj.selected[0].type === "Viseme") {
+            console.log(obj.selected[0].type);
+            console.log("open dialog")
+        }
     }
-    //   logMessage('Selected Event: (' + obj.selected.length + '). changed selection :' + obj.changed.length, 2);
 });
 timeline.onDragStarted(function (obj) {
     //  logDraggingMessage(obj, 'dragstarted');

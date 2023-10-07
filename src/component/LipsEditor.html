@@ -1,0 +1,141 @@
+<div>
+    <b>Lips Editor</b>
+
+
+    <div id="lips_row_sample" class="col-3 d-none">
+        <div class="card shadow my-1">
+            <button>
+                <img src="" width="100%"/>
+                <label class="lip_name"></label>
+            </button>
+        </div>
+    </div>
+
+    <div id="lips_button" class="row">
+
+    </div>
+
+    <label>Expressiveness :</label>
+    <div class="row">
+        <div class="col-8">
+            <input id="Expressiveness_range"
+                   type="range" min="0" max="100" value="50"
+                   style="width: 100%">
+        </div>
+        <div class="col-4">
+            <input id="Expressiveness_number" class="form-control" value="50" type="number">
+        </div>
+    </div>
+
+
+    <script>
+        var lips = [
+            {name: "none", url: "images/Lips_icon/none.jpg"},
+            {name: "Ah", url: "images/Lips_icon/ah.jpg"},
+            {name: "B_M_P", url: "images/Lips_icon/b_m_p.jpg"},
+            {name: "ch_j", url: "images/Lips_icon/ch_j.jpg"},
+
+            {name: "EE", url: "images/Lips_icon/ee.jpg"},
+            {name: "Er", url: "images/Lips_icon/er.jpg"},
+            {name: "F_V", url: "images/Lips_icon/f_v.jpg"},
+            {name: "lh", url: "images/Lips_icon/lh.jpg"},
+
+
+            {name: "K_G", url: "images/Lips_icon/k_g.jpg"},
+            {name: "N_NG", url: "images/Lips_icon/n_ng.jpg"},
+            {name: "Oh", url: "images/Lips_icon/oh.jpg"},
+            {name: "R", url: "images/Lips_icon/r.jpg"},
+
+
+            {name: "S_Z", url: "images/Lips_icon/s_z.jpg"},
+            {name: "T_L_D", url: "images/Lips_icon/t_l_d.jpg"},
+            {name: "Th", url: "images/Lips_icon/th.jpg"},
+            {name: "w_oo", url: "images/Lips_icon/w_oo.jpg"},
+
+
+        ];
+
+        // Function to create and append lips elements
+        function createLipsElement(name, url) {
+            var lipsRowSample = document.getElementById("lips_row_sample").cloneNode(true);
+            lipsRowSample.classList.remove("d-none");
+            lipsRowSample.querySelector("img").setAttribute("src", url);
+            lipsRowSample.querySelector(".lip_name").textContent = name; // Set lip name
+            lipsRowSample.querySelector("button").addEventListener("click", function () {
+                    // Handle click event for the lips element if needed
+                    console.log("Lips element clicked: " + name);
+
+                    if (timeline) {
+                        const currentModel = timeline.getModel();
+                        // Find the 'Viseme' row in the current model
+                        const visemeRow = currentModel.rows.find(row => row.title === 'Viseme');
+                        var Expressiveness_range = parseInt(document.getElementById("Expressiveness_range").value) / 100;
+
+                        // If 'Viseme' row exists, append the keyframe to it
+                        if (visemeRow) {
+                            visemeRow.keyframes.push({
+                                val: timeline.getTime(),
+                                shape: 'rhomb',
+                                type: 'Viseme',
+                                value: name,
+                                expression: Expressiveness_range,
+                            });
+                        } else {
+                            // If 'Viseme' row doesn't exist, create a new one and append the keyframe
+
+
+
+                            currentModel.rows.push({
+                                title: 'Viseme',
+                                keyframes: [
+                                    {
+                                        val: timeline.getTime(),
+                                        shape: 'rhomb',
+                                        type: 'Viseme',
+                                        value: name,
+                                        expression: Expressiveness_range,
+                                    }
+                                ]
+                            });
+                        }
+
+                        timeline.setModel(currentModel);
+
+                        // Generate outline list menu
+                        generateHTMLOutlineListNodes(currentModel.rows);
+                    }
+                }
+            );
+            return lipsRowSample;
+        }
+
+        // Append lips elements to the lips_button div
+        var lipsButtonDiv = document.getElementById("lips_button");
+        lips.forEach(function (lip) {
+            var lipsElement = createLipsElement(lip.name, lip.url);
+            lipsButtonDiv.appendChild(lipsElement);
+        });
+
+
+        var rangeInput = document.getElementById("Expressiveness_range");
+        var numberInput = document.getElementById("Expressiveness_number");
+
+        // Update number input when range input changes
+        rangeInput.addEventListener("input", function () {
+            numberInput.value = rangeInput.value;
+        });
+
+        // Update range input when number input changes
+        numberInput.addEventListener("input", function () {
+            // Ensure the value is within the range of 0 to 100
+            var value = parseInt(numberInput.value);
+            if (value < 0) {
+                value = 0;
+            } else if (value > 100) {
+                value = 100;
+            }
+            rangeInput.value = value;
+            numberInput.value = value; // Update number input with sanitized value
+        });
+    </script>
+</div>
