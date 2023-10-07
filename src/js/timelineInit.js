@@ -12,12 +12,6 @@ function generateModel() {
         {
             title: 'Viseme',
             keyframes: [
-                {
-                    val: 0,
-                    shape: 'rhomb',
-                    type: 'Viseme',
-                    value: "a"
-                },
             ],
         },
         {
@@ -147,8 +141,7 @@ timeline.onSelected(function (obj) {
 
     if (obj.selected[0]) {
         if (obj.selected[0].type && obj.selected[0].type === "Viseme") {
-            console.log(obj.selected[0].type);
-            console.log("open dialog")
+            updateActiveButtonByName(obj.selected[0].value);
         }
     }
 });

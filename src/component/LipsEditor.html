@@ -55,6 +55,18 @@
 
         ];
 
+
+        function updateActiveButtonByName(name) {
+            // Remove active_outline class from all buttons
+            var allButtons = document.querySelectorAll("#lips_button button");
+            allButtons.forEach(function (btn) {
+                btn.classList.remove("active_outline");
+                if (btn.querySelector(".lip_name").textContent === name) {
+                    btn.classList.add("active_outline");
+                }
+            });
+        }
+
         // Function to create and append lips elements
         function createLipsElement(name, url) {
             var lipsRowSample = document.getElementById("lips_row_sample").cloneNode(true);
@@ -62,50 +74,55 @@
             lipsRowSample.querySelector("img").setAttribute("src", url);
             lipsRowSample.querySelector(".lip_name").textContent = name; // Set lip name
             lipsRowSample.querySelector("button").addEventListener("click", function () {
-                    // Handle click event for the lips element if needed
-                    console.log("Lips element clicked: " + name);
+                // Handle click event for the lips element if needed
+                updateActiveButtonByName(name);
 
-                    if (timeline) {
-                        const currentModel = timeline.getModel();
-                        // Find the 'Viseme' row in the current model
-                        const visemeRow = currentModel.rows.find(row => row.title === 'Viseme');
-                        var Expressiveness_range = parseInt(document.getElementById("Expressiveness_range").value) / 100;
+                if (timeline) {
+                    const currentModel = timeline.getModel();
+                    // Find the 'Viseme' row in the current model
+                    const visemeRow = currentModel.rows.find(row => row.title === 'Viseme');
+                    var Expressiveness_range = parseInt(document.getElementById("Expressiveness_range").value) / 100;
 
-                        // If 'Viseme' row exists, append the keyframe to it
-                        if (visemeRow) {
-                            visemeRow.keyframes.push({
-                                val: timeline.getTime(),
-                                shape: 'rhomb',
-                                type: 'Viseme',
-                                value: name,
-                                expression: Expressiveness_range,
-                            });
-                        } else {
-                            // If 'Viseme' row doesn't exist, create a new one and append the keyframe
+                    // If 'Viseme' row exists, check if a keyframe with the same 'val' property already exists
+                    if (visemeRow) {
+                        const existingKeyframeIndex = visemeRow.keyframes.findIndex(keyframe => keyframe.val === timeline.getTime());
 
-
-
-                            currentModel.rows.push({
-                                title: 'Viseme',
-                                keyframes: [
-                                    {
-                                        val: timeline.getTime(),
-                                        shape: 'rhomb',
-                                        type: 'Viseme',
-                                        value: name,
-                                        expression: Expressiveness_range,
-                                    }
-                                ]
-                            });
+                        // If a keyframe with the same 'val' property exists, remove it
+                        if (existingKeyframeIndex !== -1) {
+                            visemeRow.keyframes.splice(existingKeyframeIndex, 1);
                         }
 
-                        timeline.setModel(currentModel);
-
-                        // Generate outline list menu
-                        generateHTMLOutlineListNodes(currentModel.rows);
+                        // Add the new keyframe to 'Viseme' row
+                        visemeRow.keyframes.push({
+                            val: timeline.getTime(),
+                            shape: 'rhomb',
+                            type: 'Viseme',
+                            value: name,
+                            expression: Expressiveness_range,
+                        });
+                    } else {
+                        // If 'Viseme' row doesn't exist, create a new one and add the keyframe
+                        currentModel.rows.push({
+                            title: 'Viseme',
+                            keyframes: [
+                                {
+                                    val: timeline.getTime(),
+                                    shape: 'rhomb',
+                                    type: 'Viseme',
+                                    value: name,
+                                    expression: Expressiveness_range,
+                                }
+                            ]
+                        });
                     }
+
+                    timeline.setModel(currentModel);
+
+                    // Generate outline list menu
+                    generateHTMLOutlineListNodes(currentModel.rows);
                 }
-            );
+            });
+
             return lipsRowSample;
         }
 
