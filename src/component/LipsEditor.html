@@ -70,7 +70,6 @@
 
 
         ];
-
         function updateActiveButtonByName(name) {
             // Remove active_outline class from all buttons
             var allButtons = document.querySelectorAll("#lips_button button");
@@ -81,7 +80,6 @@
                 }
             });
         }
-
         // Function to create and append lips elements
         function createLipsElement(name, url) {
             var lipsRowSample = document.getElementById("lips_row_sample").cloneNode(true);
@@ -97,7 +95,6 @@
 
             return lipsRowSample;
         }
-
         function mapPhoneme(phonemeContent) {
             // Define a mapping object that associates phonemes with weights
             // Define a mapping object that associates phonemes with weights
@@ -124,9 +121,6 @@
             // Check if the phoneme is in the mapping, return default weight if not found
             return phonemeWeightMapping[phonemeContent] || "viseme_sil";
         }
-
-
-
         function addVisemeKeyframe(name) {
             if (timeline) {
                 const currentModel = timeline.getModel();
@@ -187,7 +181,6 @@
             var lipsElement = createLipsElement(lip.name, lip.url);
             lipsButtonDiv.appendChild(lipsElement);
         });
-
 
         var rangeInput = document.getElementById("Expressiveness_range");
         var numberInput = document.getElementById("Expressiveness_number");
