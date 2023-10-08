@@ -1,7 +1,24 @@
 <div>
+    <style>
+        #morphTargetsList > * {
+            text-align: center; /* Center the content inside the list item */
+        }
+
+        /* Apply styles to range inputs */
+        #morphTargetsList input[type="range"] {
+            width: 100%; /* Set the width to 100% to fill the entire column */
+        }
+
+        /* Apply styles to target names (labels) */
+        #morphTargetsList label {
+            display: block; /* Make the label a block element to move it to a new line */
+            margin-top: 5px; /* Add margin at the top for spacing */
+        }
+        #morphTargetsList img {
+            width: 100%;
+        }
+    </style>
     <b>Lips Editor</b>
-
-
     <div id="lips_row_sample" class="col-3 d-none">
         <div class="card shadow my-1">
             <button>
@@ -12,7 +29,6 @@
     </div>
 
     <div id="lips_button" class="row">
-
     </div>
 
     <label>Expressiveness :</label>
@@ -54,7 +70,6 @@
 
 
         ];
-
 
         function updateActiveButtonByName(name) {
             // Remove active_outline class from all buttons
@@ -109,6 +124,8 @@
             // Check if the phoneme is in the mapping, return default weight if not found
             return phonemeWeightMapping[phonemeContent] || "viseme_sil";
         }
+
+
 
         function addVisemeKeyframe(name) {
             if (timeline) {

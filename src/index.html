@@ -51,8 +51,42 @@
         <button id="importButton" >Import Model</button>
 
 
-        <div data-include="Inspector"></div>
-        <div data-include="LipsEditor"></div>
+        <ul class="nav nav-tabs w-100" id="myTab " role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="Inspector-tab" data-bs-toggle="tab" data-bs-target="#Inspector"
+                        type="button" role="tab" aria-controls="Inspector" aria-selected="true">Inspector
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="LipsEditor-tab" data-bs-toggle="tab" data-bs-target="#LipsEditor"
+                        type="button" role="tab" aria-controls="LipsEditor" aria-selected="true">Lips Editor
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="Expersion-tab" data-bs-toggle="tab" data-bs-target="#Expersion"
+                        type="button" role="tab" aria-controls="Expersion" aria-selected="true">Expersion
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContentInspector">
+            <div class="tab-pane fade show active" id="Inspector" role="tabpanel" aria-labelledby="Hierarchy-tab">
+
+                <div data-include="Inspector"></div>
+
+            </div>
+
+            <div class="tab-pane fade" id="LipsEditor" role="tabpanel" aria-labelledby="LipsEditor-tab">
+                <div data-include="LipsEditor"></div>
+            </div>
+
+            <div class="tab-pane fade" id="Expersion" role="tabpanel" aria-labelledby="Expersion-tab">
+                <div data-include="Expersion"></div>
+            </div>
+
+        </div>
+
+
+
     </div>
 </div>
 
