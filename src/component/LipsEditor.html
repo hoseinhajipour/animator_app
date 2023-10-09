@@ -14,6 +14,7 @@
             display: block; /* Make the label a block element to move it to a new line */
             margin-top: 5px; /* Add margin at the top for spacing */
         }
+
         #morphTargetsList img {
             width: 100%;
         }
@@ -24,6 +25,7 @@
             <button>
                 <img src="" width="100%"/>
                 <label class="lip_name"></label>
+                <label class="lip_target d-none"></label>
             </button>
         </div>
     </div>
@@ -44,83 +46,53 @@
     </div>
 
 
+    <input id="lipsync_audio_file" type="file">
+    <audio id="lipsync_audio" controls></audio>
+    <button class="btn btn-primary" id="runButton">Auto Lipsync</button>
+
+
+    <script src="./js/AutoLipSyncer.js"></script>
     <script>
         var lips = [
-            {name: "none", url: "images/Lips_icon/none.jpg"},
-            {name: "Ah", url: "images/Lips_icon/ah.jpg"},
-            {name: "B_M_P", url: "images/Lips_icon/b_m_p.jpg"},
-            {name: "ch_j", url: "images/Lips_icon/ch_j.jpg"},
-
-            {name: "EE", url: "images/Lips_icon/ee.jpg"},
-            {name: "Er", url: "images/Lips_icon/er.jpg"},
-            {name: "F_V", url: "images/Lips_icon/f_v.jpg"},
-            {name: "lh", url: "images/Lips_icon/lh.jpg"},
-
-
-            {name: "K_G", url: "images/Lips_icon/k_g.jpg"},
-            {name: "N_NG", url: "images/Lips_icon/n_ng.jpg"},
-            {name: "Oh", url: "images/Lips_icon/oh.jpg"},
-            {name: "R", url: "images/Lips_icon/r.jpg"},
-
-
-            {name: "S_Z", url: "images/Lips_icon/s_z.jpg"},
-            {name: "T_L_D", url: "images/Lips_icon/t_l_d.jpg"},
-            {name: "Th", url: "images/Lips_icon/th.jpg"},
-            {name: "w_oo", url: "images/Lips_icon/w_oo.jpg"},
-
-
+            {name: "X", url: "images/Lips_icon/none.jpg", target: "viseme_sil"},
+            {name: "A", url: "images/Lips_icon/ah.jpg", target: "viseme_aa"},
+            {name: "B", url: "images/Lips_icon/b_m_p.jpg", target: "viseme_PP"},
+            {name: "C", url: "images/Lips_icon/ch_j.jpg", target: "viseme_CH"},
+            {name: "D", url: "images/Lips_icon/t_l_d.jpg", target: "viseme_DD"},
+            {name: "E", url: "images/Lips_icon/ee.jpg", target: "viseme_E"},
+            {name: "F", url: "images/Lips_icon/f_v.jpg", target: "viseme_FF"},
+            {name: "G", url: "images/Lips_icon/k_g.jpg", target: "viseme_I"},
+            {name: "H", url: "images/Lips_icon/th.jpg", target: "viseme_TH"},
         ];
+
         function updateActiveButtonByName(name) {
             // Remove active_outline class from all buttons
             var allButtons = document.querySelectorAll("#lips_button button");
             allButtons.forEach(function (btn) {
                 btn.classList.remove("active_outline");
-                if (btn.querySelector(".lip_name").textContent === name) {
+                if (btn.querySelector(".lip_target").textContent === name) {
                     btn.classList.add("active_outline");
                 }
             });
         }
+
         // Function to create and append lips elements
-        function createLipsElement(name, url) {
+        function createLipsElement(name, target, url) {
             var lipsRowSample = document.getElementById("lips_row_sample").cloneNode(true);
             lipsRowSample.classList.remove("d-none");
             lipsRowSample.querySelector("img").setAttribute("src", url);
             lipsRowSample.querySelector(".lip_name").textContent = name; // Set lip name
+            lipsRowSample.querySelector(".lip_target").textContent = target; // Set lip name
             lipsRowSample.querySelector("button").addEventListener("click", function () {
                 // Handle click event for the lips element if needed
-                updateActiveButtonByName(name);
+                updateActiveButtonByName(target);
 
-                addVisemeKeyframe(name);
+                addVisemeKeyframe(target);
             });
 
             return lipsRowSample;
         }
-        function mapPhoneme(phonemeContent) {
-            // Define a mapping object that associates phonemes with weights
-            // Define a mapping object that associates phonemes with weights
-            var phonemeWeightMapping = {
-                'Ah': 'viseme_aa',
-                'o': 'viseme_O',
-                'EE': 'viseme_E',
-                'w': 'viseme_U',
-                'i': 'viseme_I',
-                'k': 'viseme_kk',
-                'f': 'viseme_FF',
-                'n': 'viseme_nn',
-                'm': 'viseme_nn',
-                's': 'viseme_SS',
-                'ch': 'viseme_CH',
-                'c': 'viseme_CH',
-                'Th': 'viseme_TH',
-                'T_L_D': 'viseme_DD',
-                'y': 'viseme_SS',
-                'p': 'viseme_PP',
-                'z': 'viseme_E',
-            };
 
-            // Check if the phoneme is in the mapping, return default weight if not found
-            return phonemeWeightMapping[phonemeContent] || "viseme_sil";
-        }
         function addVisemeKeyframe(name) {
             if (timeline) {
                 const currentModel = timeline.getModel();
@@ -164,7 +136,7 @@
 
 
                 HeadMesh.morphTargetManager._targets.forEach(target => {
-                    if (target.name === mapPhoneme(name)) {
+                    if (target.name === name) {
                         target.influence = Expressiveness_range;
                     } else {
                         target.influence = 0;
@@ -178,7 +150,7 @@
         // Append lips elements to the lips_button div
         var lipsButtonDiv = document.getElementById("lips_button");
         lips.forEach(function (lip) {
-            var lipsElement = createLipsElement(lip.name, lip.url);
+            var lipsElement = createLipsElement(lip.name, lip.target, lip.url);
             lipsButtonDiv.appendChild(lipsElement);
         });
 
@@ -218,7 +190,7 @@
         function getCurrentViseme() {
             var activeButton = document.querySelector("#lips_button button.active_outline");
             if (activeButton) {
-                var lipNameElement = activeButton.querySelector(".lip_name");
+                var lipNameElement = activeButton.querySelector(".lip_target");
                 if (lipNameElement) {
                     return lipNameElement.textContent;
                 }

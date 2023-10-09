@@ -22,3 +22,35 @@ function searchForBlendShape(node) {
         return null;
     }
 }
+
+function secondsToMilliseconds(seconds) {
+    return seconds * 1000;
+}
+
+
+function findMorph(Manager, name) {
+    for (let i = 0; i < Manager.numTargets; i++) {
+        const morphTarget = Manager.getTarget(i);
+        if (morphTarget.name === name) {
+            return morphTarget;
+        }
+    }
+    return null;
+}
+
+function secondsToFrames(seconds) {
+    return Math.round(seconds * frameRate);
+}
+
+
+function millisecondsToFrames(milliseconds) {
+    var seconds = milliseconds / 1000; // Convert milliseconds to seconds
+    var frames = seconds * frameRate;
+    return frames;
+}
+
+function framesToMilliseconds(frames) {
+    var seconds = frames / frameRate;
+    var milliseconds = seconds * 1000; // Convert seconds to milliseconds
+    return milliseconds;
+}

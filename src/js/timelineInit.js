@@ -2,7 +2,6 @@ var outlineContainer = document.getElementById('outline-container');
 playing = false;
 playStep = 60;
 
-var frameRate = 60;
 // Automatic tracking should be turned off when user interaction happened.
 trackTimelineMovement = false;
 var endFrame = 0;
@@ -120,6 +119,11 @@ function onStopClick() {
         for (const sound of scene._mainSoundTrack.soundCollection) {
             sound.stop();
         }
+    }
+
+    if(MasterAudio){
+        MasterAudio.pause();
+        MasterAudio.currentTime = 0;
     }
 
 
@@ -322,6 +326,9 @@ function onPlayClick(event) {
         });
 
 
+        if(MasterAudio){
+            MasterAudio.play();
+        }
     }
 }
 
@@ -333,6 +340,10 @@ function onPauseClick(event) {
         animationGroups.forEach(group => {
             group.stop();
         });
+        if(MasterAudio){
+            MasterAudio.pause();
+        }
+
     }
 }
 

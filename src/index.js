@@ -17,7 +17,7 @@ const createWindow = () => {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            webSecurity: false ,
+            webSecurity: false,
             preload: path.join(__dirname, 'preload.js'),
         },
     });
@@ -134,9 +134,10 @@ const createWindow = () => {
     mainWindow.webContents.openDevTools();
 
 
-    ipcMain.on('run-command', (event) => {
+    ipcMain.on('run-command', (event, inputAudio) => {
+
         const command = 'C:\\Rhubarb\\rhubarb.exe';
-        const inputAudio = 'c:\\starter.wav'; // Replace this with the actual input audio file path
+  //      const inputAudio = 'c:\\starter.wav'; // Replace this with the actual input audio file path
         const args = [inputAudio, '-f', 'json'];
 
         const process = spawn(command, args);
@@ -150,6 +151,8 @@ const createWindow = () => {
         process.on('close', (code) => {
             event.sender.send('command-done', code, result);
         });
+
+
     });
 
 

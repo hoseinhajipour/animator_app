@@ -62,7 +62,7 @@ const createScene = function (laoadformurl = null) {
                 // Callback function, do something with the loaded meshes if needed
 
 
-           //     console.log(_HeadMesh);
+                //     console.log(_HeadMesh);
                 updateObjectNamesFromScene();
             });
         };
@@ -203,17 +203,3 @@ canvas.addEventListener("contextmenu", function (event) {
     event.preventDefault(); // Prevent the default context menu
 });
 
-
-function millisecondsToFrames(milliseconds) {
-    var framesPerSecond = 60;
-    var seconds = milliseconds / 1000; // Convert milliseconds to seconds
-    var frames = seconds * framesPerSecond;
-    return frames;
-}
-
-function framesToMilliseconds(frames) {
-    var framesPerSecond = 60;
-    var seconds = frames / framesPerSecond;
-    var milliseconds = seconds * 1000; // Convert seconds to milliseconds
-    return milliseconds;
-}
