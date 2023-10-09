@@ -4,6 +4,8 @@ const fileInput = document.getElementById('lipsync_audio_file');
 var MasterAudio = document.getElementById('lipsync_audio');
 var inputAudio;
 var excludeTargets = [];
+var blinkDuration = 5; // Duration of the blink in frames
+var blinkWait = 50; // Duration of the blink in frames
 fileInput.addEventListener('change', function () {
     const file = event.target.files[0];
     // Get full path
@@ -16,14 +18,16 @@ fileInput.addEventListener('change', function () {
 
 
 document.getElementById('runButton').addEventListener('click', () => {
+    $("#lipsync_loading").show();
     ipcRenderer.send('run-command', inputAudio);
 });
 ipcRenderer.on('command-done', (event, code, result) => {
     var lipsyncData = JSON.parse(result);
+    $("#lipsync_loading").hide();
+    ClearVisemeKeyframes();
     lipsyncData.mouthCues.forEach(mouthCue => {
         addVisemeKeyframeByTime(mapViseme(mouthCue.value), secondsToMilliseconds(mouthCue.start));
     });
-    console.log(lipsyncData.metadata.duration);
     lipSync_(lipsyncData.mouthCues, lipsyncData.metadata.duration, HeadMesh, "test", 0);
 
 });
@@ -44,6 +48,24 @@ function mapViseme(phonemeContent) {
 
     // Check if the phoneme is in the mapping, return default weight if not found
     return phonemeWeightMapping[phonemeContent] || "viseme_sil";
+}
+
+
+function ClearVisemeKeyframes() {
+    if (timeline) {
+        const currentModel = timeline.getModel();
+        // Find the 'Viseme' row in the current model
+        const visemeRow = currentModel.rows.find(row => row.title === 'Viseme');
+        if (visemeRow) {
+            visemeRow.keyframes = [];
+        } else {
+            currentModel.rows.push({
+                title: 'Viseme',
+                keyframes: []
+            });
+        }
+        timeline.setModel(currentModel);
+    }
 }
 
 function addVisemeKeyframeByTime(name, frame_millisecond) {
@@ -225,6 +247,76 @@ function AllZeroKeyframes(animationGroup, audio_duration, _HeadMesh) {
     }
 }
 
+function AutoBlinkAnimate(animationGroup, audio_duration, _HeadMesh) {
+
+    var eyeBlinkLeft = findMorph(_HeadMesh.morphTargetManager, "eyeBlinkLeft");
+    var eyeBlinkRight = findMorph(_HeadMesh.morphTargetManager, "eyeBlinkRight");
+
+
+    var totalFrames = secondsToFrames(audio_duration, frameRate);
+
+    // Calculate the number of complete blink cycles
+    var completeCycles = Math.floor(totalFrames / (blinkWait + blinkDuration)) - 1;
+    if (completeCycles > 0) {
+        // Create an array to store the keyframes for the blink animation
+        var morphTargetKeys = [];
+
+        morphTargetKeys.push({
+            frame: 0,
+            value: 0
+        });
+
+        for (var i = 0; i < completeCycles; i++) {
+
+            morphTargetKeys.push({
+                frame: blinkWait + (i * blinkWait),
+                value: 0
+            });
+            morphTargetKeys.push({
+                frame: blinkWait + (i * blinkWait) + (blinkDuration / 2),
+                value: 1.0
+            });
+            morphTargetKeys.push({
+                frame: blinkWait + (i * blinkWait) + blinkDuration,
+                value: 0
+            });
+        }
+        morphTargetKeys.push({
+            frame: totalFrames,
+            value: 0
+        });
+        // Create animations for both left and right eye blinks
+        var eyeBlinkLeftAnimation = new BABYLON.Animation(
+            "eyeBlinkLeft",
+            "influence",
+            frameRate,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+            BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
+        );
+
+        var eyeBlinkRightAnimation = new BABYLON.Animation(
+            "eyeBlinkRight",
+            "influence",
+            frameRate,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+            BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
+        );
+
+        // Set the keyframes for both animations
+        eyeBlinkLeftAnimation.setKeys(morphTargetKeys);
+        eyeBlinkRightAnimation.setKeys(morphTargetKeys);
+
+
+        eyeBlinkLeft.animations.push(eyeBlinkLeftAnimation);
+        animationGroup.addTargetedAnimation(eyeBlinkLeftAnimation, eyeBlinkLeft);
+
+        eyeBlinkRight.animations.push(eyeBlinkRightAnimation);
+        animationGroup.addTargetedAnimation(eyeBlinkRightAnimation, eyeBlinkRight);
+    }
+
+
+}
+
 function lipSync_(phonemes, audio_duration, _HeadMesh, title, start_frame) {
 
     var Expressiveness_range = document.getElementById("Expressiveness_range");
@@ -264,9 +356,23 @@ function lipSync_(phonemes, audio_duration, _HeadMesh, title, start_frame) {
             });
             console.log(morphVisemeKeys);
 
+
+            // Try to find an existing animation group by name
+            var existingAnimationGroup = scene.getAnimationGroupByName(_HeadMesh.name + "_talk_" + title);
+
+            // Check if the animation group exists
+            if (existingAnimationGroup) {
+                // Dispose of the existing animation group
+                existingAnimationGroup.dispose();
+            }
+
+            // Create a new FaceAnimationGroup
             var FaceAnimationGroup = new BABYLON.AnimationGroup(_HeadMesh.name + "_talk_" + title);
 
+
+            // var FaceAnimationGroup = new BABYLON.AnimationGroup(_HeadMesh.name + "_talk_" + title);
             combineKeyFrames(FaceAnimationGroup, morphVisemeKeys, audio_duration, _HeadMesh);
+            AutoBlinkAnimate(FaceAnimationGroup, audio_duration, _HeadMesh);
             AllZeroKeyframes(FaceAnimationGroup, audio_duration, _HeadMesh);
 
             FaceAnimationGroup.normalize(0, FaceAnimationGroup.to);

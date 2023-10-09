@@ -34,6 +34,9 @@
 
     <link rel="stylesheet" href="./css/jquery-ui.css">
     <script src="./js/jquery-ui.js"></script>
+    <script src="js/wavesurfer.min.js"></script>
+
+
 </head>
 
 <body>
@@ -48,7 +51,7 @@
     </div>
     <div class="col-3 resizable-panel Inspector_limit">
         <input type="file" id="modelFileInput" style="display: none;">
-        <button id="importButton" >Import Model</button>
+        <button id="importButton">Import Model</button>
 
 
         <ul class="nav nav-tabs w-100" id="myTab " role="tablist">
@@ -69,28 +72,23 @@
             </li>
         </ul>
         <div class="tab-content" id="myTabContentInspector">
-            <div class="tab-pane fade show active" id="Inspector" role="tabpanel" aria-labelledby="Hierarchy-tab">
-
-                <div data-include="Inspector"></div>
-
-            </div>
-
-            <div class="tab-pane fade" id="LipsEditor" role="tabpanel" aria-labelledby="LipsEditor-tab">
+            <div class="tab-pane fade show active" id="LipsEditor" role="tabpanel" aria-labelledby="LipsEditor-tab">
                 <div data-include="LipsEditor"></div>
             </div>
 
             <div class="tab-pane fade" id="Expersion" role="tabpanel" aria-labelledby="Expersion-tab">
                 <div data-include="Expersion"></div>
             </div>
-
+            <div class="tab-pane fade " id="Inspector" role="tabpanel" aria-labelledby="Hierarchy-tab">
+                <div data-include="Inspector"></div>
+            </div>
         </div>
-
 
 
     </div>
 </div>
 
-
+<div data-include="audiowave"></div>
 <div data-include="timeline" class="resizable-panel-timeline"></div>
 
 
@@ -122,6 +120,9 @@
         importButton.addEventListener('click', ImportModel);
     });
 </script>
+
+
+
 
 </body>
 

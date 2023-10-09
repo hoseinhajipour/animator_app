@@ -48,7 +48,12 @@
 
     <input id="lipsync_audio_file" type="file">
     <audio id="lipsync_audio" controls></audio>
-    <button class="btn btn-primary" id="runButton">Auto Lipsync</button>
+    <button class="btn btn-primary form-control my-3" id="runButton">
+        Auto LipSync
+        <div id="lipsync_loading" class="spinner-border spinner-border-sm text-light" style="display: none" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </button>
 
 
     <script src="./js/AutoLipSyncer.js"></script>

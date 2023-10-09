@@ -1,0 +1,30 @@
+<script type="module" data-type="module">
+    // Zooming the waveform
+
+    import WaveSurfer from './js/wavesurfer.esm.js';
+
+    const wavesurfer = WaveSurfer.create({
+        container: "#audio_waveform",
+        waveColor: 'rgb(0,87,200)',
+        progressColor: 'rgb(0,43,100)',
+        minPxPerSec: 120,
+    })
+
+    // Update the zoom level on slider change
+    wavesurfer.once('decode', () => {
+        const slider = document.getElementById('zoom_wave')
+
+        slider.addEventListener('input', (e) => {
+            const minPxPerSec = e.target.valueAsNumber;
+            wavesurfer.zoom(minPxPerSec);
+            console.log(minPxPerSec);
+        })
+    });
+
+    const fileInputcc = document.getElementById('lipsync_audio_file');
+    fileInputcc.addEventListener('change', function (event) {
+
+
+        wavesurfer.load(MasterAudio.src);
+    });
+</script>
