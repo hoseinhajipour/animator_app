@@ -226,6 +226,8 @@ function AllZeroKeyframes(animationGroup, audio_duration, _HeadMesh) {
 }
 
 function lipSync_(phonemes, audio_duration, _HeadMesh, title, start_frame) {
+
+    var Expressiveness_range = document.getElementById("Expressiveness_range");
     if (_HeadMesh) {
         // Ensure that the mesh has a morph target manager
         if (_HeadMesh.morphTargetManager) {
@@ -247,7 +249,7 @@ function lipSync_(phonemes, audio_duration, _HeadMesh, title, start_frame) {
                     });
                     morphTargetKeys.push({
                         frame: mid,
-                        value: 1.0
+                        value: Expressiveness_range.value / 100
                     });
                     morphTargetKeys.push({
                         frame: end,
@@ -265,7 +267,7 @@ function lipSync_(phonemes, audio_duration, _HeadMesh, title, start_frame) {
             var FaceAnimationGroup = new BABYLON.AnimationGroup(_HeadMesh.name + "_talk_" + title);
 
             combineKeyFrames(FaceAnimationGroup, morphVisemeKeys, audio_duration, _HeadMesh);
-            //  AllZeroKeyframes(FaceAnimationGroup, audio_duration, _HeadMesh);
+            AllZeroKeyframes(FaceAnimationGroup, audio_duration, _HeadMesh);
 
             FaceAnimationGroup.normalize(0, FaceAnimationGroup.to);
             FaceAnimationGroup.offset = start_frame;
