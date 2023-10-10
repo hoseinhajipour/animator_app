@@ -12,48 +12,48 @@
     }
 
 
-    function lookAt(bone, targetPosition) {
-        let mat = BABYLON.Matrix.LookAtLH(bone.getWorldMatrix().getTranslation(), targetPosition, BABYLON.Vector3.Up());
-        bone.setRotationMatrix(mat);
 
-        console.log(bone.name,targetPosition);
-    }
-
-    scene.registerBeforeRender(() => {
-
+    document.addEventListener('mousemove', e => {
         if (eyeLookat) {
             var skeleton = scene.skeletons[0];
             if (skeleton) {
-                // Loop through the bones and find the one with the desired name
                 var eyeLeftBone = null;
                 var eyeRightBone = null;
                 var headBone = null;
-                for (var i = 0; i < skeleton.bones.length; i++) {
-                    var bone = skeleton.bones[i];
-                    if (bone.name === "LeftEye") {
-                        eyeLeftBone = bone;
-                    } else if (bone.name === "RightEye") {
-                        eyeRightBone = bone;
-                    } else if (bone.name === "Head") {
-                        headBone = bone;
-                    }
 
-                    if (eyeLeftBone && eyeRightBone) {
-                        break;
+                // Find bones by name
+                skeleton.bones.forEach(bone => {
+                    switch (bone.name) {
+                        case "LeftEye":
+                            eyeLeftBone = bone;
+                            break;
+                        case "RightEye":
+                            eyeRightBone = bone;
+                            break;
+                        case "Head":
+                            headBone = bone;
+                            break;
                     }
+                });
+
+                // Check if all required bones are found
+                if (eyeLeftBone && eyeRightBone && headBone) {
+                    // Calculate yaw, pitch, and roll based on mouse coordinates
+                    var yaw = (e.clientX - window.innerWidth / 2) / window.innerWidth * 2 * Math.PI;
+                    var pitch = (e.clientY - window.innerHeight / 2) / window.innerHeight * 2 * Math.PI;
+                    var roll = 45; // Set a fixed roll angle (in degrees)
+
+                    // Apply yaw, pitch, and roll to the head bone
+                    headBone.rotation.y = yaw;
+                    headBone.rotation.x = pitch;
+                    headBone.rotation.z = roll;
+
+                    headBone.setRotationQuaternion(BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0), BABYLON.Space.WORLD, eyeLeftBone);
                 }
-
-
-                const mouseX = scene.pointerX;
-                const mouseY = scene.pointerY;
-                var mousePos = new BABYLON.Vector3(mouseX, mouseY, 0);
-
-                lookAt(headBone,mousePos);
-
             }
         }
-
     });
+
 
 
 </script>
