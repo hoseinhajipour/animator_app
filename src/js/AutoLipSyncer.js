@@ -28,7 +28,8 @@ ipcRenderer.on('command-done', (event, code, result) => {
     lipsyncData.mouthCues.forEach(mouthCue => {
         addVisemeKeyframeByTime(mapViseme(mouthCue.value), secondsToMilliseconds(mouthCue.start));
     });
-    lipSync_(lipsyncData.mouthCues, lipsyncData.metadata.duration, HeadMesh, "test", 0);
+    lipSync_(lipsyncData.mouthCues, lipsyncData.metadata.duration, HeadMesh, "Head", 0);
+    lipSync_(lipsyncData.mouthCues, lipsyncData.metadata.duration, TeethMesh, "Teeth", 0);
 
 });
 

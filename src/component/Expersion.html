@@ -1,65 +1,69 @@
-<button class="btn btn-light" onclick="GenerateMorphList()">Generate List</button>
-<div id="morphTargetsList" class="row"></div>
+<div>
+    <button class="btn btn-light" onclick="GenerateMorphList()">Generate List</button>
+    <div id="morphTargetsList" class="row"></div>
 
-<script>
-    function captureMeshImageWithInfluence(parent, target) {
-        return new Promise((resolve, reject) => {
-            target.influence = 1.0;
-            BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, Maincamera, 128, function (base64Image) {
-                // Wait for 100 milliseconds using setTimeout
-                setTimeout(() => {
-                    var img = document.createElement("img");
-                    img.src = base64Image;
+    <script>
+        function captureMeshImageWithInfluence(parent, target) {
+            return new Promise((resolve, reject) => {
+                target.influence = 1.0;
+                BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, Maincamera, 128, function (base64Image) {
+                    // Wait for 100 milliseconds using setTimeout
+                    setTimeout(() => {
+                        var img = document.createElement("img");
+                        img.src = base64Image;
 
-                    parent.appendChild(img);
-                    target.influence = 0;
-                    resolve(); // Resolve the promise after capturing the image and setting influence back to 0
-                },10); // 100 milliseconds
-            });
-        });
-    }
-
-    async function UpdateMorphList() {
-        const morphTargetsList = document.getElementById("morphTargetsList");
-        morphTargetsList.innerHTML = "";
-
-        if (HeadMesh.morphTargetManager) {
-            const targets = HeadMesh.morphTargetManager._targets;
-
-            for (let index = 0; index < targets.length; index++) {
-                const target = targets[index];
-                const listItem = document.createElement("div");
-                listItem.classList.add("col-4"); // Add class "col-3"
-
-                await captureMeshImageWithInfluence(listItem, target);
-
-                // Label for target name
-                const nameLabel = document.createElement("label");
-                nameLabel.textContent = target.name;
-                listItem.appendChild(nameLabel);
-
-                // Image, name, and range slider
-                morphTargetsList.appendChild(listItem);
-
-                // Range slider for influence
-                const inputRange = document.createElement("input");
-                inputRange.type = "range";
-                inputRange.min = "0";
-                inputRange.max = "1";
-                inputRange.step = "0.01";
-                inputRange.value = target.influence.toFixed(2);
-
-                inputRange.addEventListener("input", function () {
-                    target.influence = parseFloat(this.value);
+                        parent.appendChild(img);
+                        target.influence = 0;
+                        resolve(); // Resolve the promise after capturing the image and setting influence back to 0
+                    },10); // 100 milliseconds
                 });
+            });
+        }
 
-                listItem.appendChild(inputRange);
+        async function UpdateMorphList() {
+            const morphTargetsList = document.getElementById("morphTargetsList");
+            morphTargetsList.innerHTML = "";
+
+            if (HeadMesh.morphTargetManager) {
+                const targets = HeadMesh.morphTargetManager._targets;
+
+                for (let index = 0; index < targets.length; index++) {
+                    const target = targets[index];
+                    const listItem = document.createElement("div");
+                    listItem.classList.add("col-4"); // Add class "col-3"
+
+                    await captureMeshImageWithInfluence(listItem, target);
+
+                    // Label for target name
+                    const nameLabel = document.createElement("label");
+                    nameLabel.textContent = target.name;
+                    listItem.appendChild(nameLabel);
+
+                    // Image, name, and range slider
+                    morphTargetsList.appendChild(listItem);
+
+                    // Range slider for influence
+                    const inputRange = document.createElement("input");
+                    inputRange.type = "range";
+                    inputRange.min = "0";
+                    inputRange.max = "1";
+                    inputRange.step = "0.01";
+                    inputRange.value = target.influence.toFixed(2);
+
+                    inputRange.addEventListener("input", function () {
+                        target.influence = parseFloat(this.value);
+                    });
+
+                    listItem.appendChild(inputRange);
+                }
             }
         }
-    }
 
 
-    async function GenerateMorphList() {
-        await UpdateMorphList();
-    }
-</script>
+        async function GenerateMorphList() {
+            await UpdateMorphList();
+        }
+    </script>
+
+
+</div>

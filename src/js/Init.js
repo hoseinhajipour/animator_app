@@ -12,7 +12,15 @@ var HighlightLayer;
 var boundingBoxGizmo;
 var load_from_url = null;
 
-var _HeadMesh;
+var HeadMesh;
+var TeethMesh;
+var BodyMesh;
+var EyeLeftMesh;
+var EyeRightMesh;
+
+
+var eyeLookat = false;
+
 const createScene = function (laoadformurl = null) {
     const scene = new BABYLON.Scene(engine);
     Maincamera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 1, new BABYLON.Vector3(0, 0, 0), scene);
@@ -60,10 +68,10 @@ const createScene = function (laoadformurl = null) {
             var dataUrl = event.target.result;
             BABYLON.SceneLoader.ImportMesh("", "", dataUrl, scene, function (meshes) {
                 // Callback function, do something with the loaded meshes if needed
-
-
                 //     console.log(_HeadMesh);
                 updateObjectNamesFromScene();
+
+                OpenSetBaseModal();
             });
         };
         reader.readAsDataURL(file);
@@ -110,8 +118,58 @@ const createScene = function (laoadformurl = null) {
         // Attach camera to the SSAO render pipeline
         scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", Maincamera);
     */
+/*
+    canvas.addEventListener("mousemove", function (event) {
+        if (eyeLookat) {
+            var mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            var mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            var mousePos = new BABYLON.Vector3(mouseX, mouseY, 0);
+
+            // Find the first skeleton in the scene
+            var skeleton = scene.skeletons[0];
+            if (skeleton) {
+                // Loop through the bones and find the one with the desired name
+                var eyeLeftBone = null;
+                var eyeRightBone = null;
+                var headBone = null;
+                for (var i = 0; i < skeleton.bones.length; i++) {
+                    var bone = skeleton.bones[i];
+                    if (bone.name === "LeftEye") {
+                        eyeLeftBone = bone;
+                    } else if (bone.name === "RightEye") {
+                        eyeRightBone = bone;
+                    } else if (bone.name === "Head") {
+                        headBone = bone;
+                    }
+
+                    if (eyeLeftBone && eyeRightBone) {
+                        break;
+                    }
+                }
+
+                if (eyeLeftBone && eyeRightBone) {
 
 
+
+// Add look at controller to make head follow mouse
+                    const followCamera = new BABYLON.FollowCamera("followCam", new BABYLON.Vector3(0, 0.5, -5), scene);
+                    followCamera.radius = 10; // Distance from target
+
+                    const lookAt = new BABYLON.LookAtController("lookAt", followCamera, headBone);
+                    lookAt.rotationSpeed = 0.1; // Speed of looking at mouse
+
+// Follow mouse position
+                    scene.onPointerMove = () => {
+                        followCamera.lockedTarget = scene.pointerX;
+                    };
+
+
+                }
+            }
+        }
+    });
+
+*/
     var options = new BABYLON.SceneOptimizerOptions();
     options.addOptimization(new BABYLON.HardwareScalingOptimization(0, 1));
 

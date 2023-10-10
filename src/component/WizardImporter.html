@@ -1,0 +1,110 @@
+<div class="modal fade" id="SetBaseModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="SetBaseModal" aria-hidden="true">
+    <div class="modal-dialog text-dark">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title " id="exampleModalLabel">Set Base Model</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label>Head Mesh</label>
+                <select id="setHeadMesh" class="form-control"></select>
+
+                <label>Teeth Mesh</label>
+                <select id="setTeethMesh" class="form-control"></select>
+
+                <label>Body Mesh</label>
+                <select id="setBodyMesh" class="form-control"></select>
+
+                <label>eye left Mesh</label>
+                <select id="setEyeLeftMesh" class="form-control"></select>
+
+                <label>eye right Mesh</label>
+                <select id="setEyeRightMesh" class="form-control"></select>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="SaveSelectedBaseModel()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+    function OpenSetBaseModal() {
+        // Call the function to populate dropdowns
+        populateDropdowns();
+        jQuery('#SetBaseModal').modal('show');
+
+    }
+
+    // Function to populate dropdowns with mesh names and IDs
+    function populateDropdowns() {
+        let objectNames = scene.meshes.map(function (mesh) {
+            return {id: mesh.uniqueId, name: mesh.name};
+        });
+
+        // Function to find the nearest match for the given keyword in mesh names
+        function findNearestMatch(keyword) {
+            const lowerCaseKeyword = keyword.toLowerCase();
+            return objectNames.find(function (object) {
+                return object.name.toLowerCase().includes(lowerCaseKeyword);
+            });
+        }
+
+        function setDropdownValue(dropdownId, keyword) {
+            const nearestMatch = findNearestMatch(keyword);
+            if (nearestMatch) {
+                document.getElementById(dropdownId).value = nearestMatch.id;
+            }
+        }
+
+        document.getElementById("setHeadMesh").innerHTML = objectNames.map(function (object) {
+            return `<option value="${object.id}">${object.name}</option>`;
+        }).join('');
+        setDropdownValue("setHeadMesh", "head");
+
+        document.getElementById("setTeethMesh").innerHTML = objectNames.map(function (object) {
+            return `<option value="${object.id}">${object.name}</option>`;
+        }).join('');
+        setDropdownValue("setTeethMesh", "teeth");
+
+        document.getElementById("setBodyMesh").innerHTML = objectNames.map(function (object) {
+            return `<option value="${object.id}">${object.name}</option>`;
+        }).join('');
+        setDropdownValue("setBodyMesh", "body");
+
+        document.getElementById("setEyeLeftMesh").innerHTML = objectNames.map(function (object) {
+            return `<option value="${object.id}">${object.name}</option>`;
+        }).join('');
+        setDropdownValue("setEyeLeftMesh", "eyeleft");
+
+        document.getElementById("setEyeRightMesh").innerHTML = objectNames.map(function (object) {
+            return `<option value="${object.id}">${object.name}</option>`;
+        }).join('');
+        setDropdownValue("setEyeRightMesh", "eyeright");
+    }
+
+
+    function SaveSelectedBaseModel() {
+        var selectedHeadMeshId = document.getElementById("setHeadMesh").value;
+        var selectedTeethMeshId = document.getElementById("setTeethMesh").value;
+        var selectedBodyMeshId = document.getElementById("setBodyMesh").value;
+        var selectedEyeLeftMeshId = document.getElementById("setEyeLeftMesh").value;
+        var selectedEyeRightMeshId = document.getElementById("setEyeRightMesh").value;
+
+        // Retrieve meshes using unique IDs
+        HeadMesh = scene.getMeshByUniqueID(parseInt(selectedHeadMeshId));
+        TeethMesh = scene.getMeshByUniqueID(parseInt(selectedTeethMeshId));
+        BodyMesh = scene.getMeshByUniqueID(parseInt(selectedBodyMeshId));
+        EyeLeftMesh = scene.getMeshByUniqueID(parseInt(selectedEyeLeftMeshId));
+        EyeRightMesh = scene.getMeshByUniqueID(parseInt(selectedEyeRightMeshId));
+
+        jQuery('#SetBaseModal').modal('hide');
+
+    }
+
+
+</script>

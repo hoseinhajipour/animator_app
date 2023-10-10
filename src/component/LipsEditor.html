@@ -57,6 +57,7 @@
 
 
     <script src="./js/AutoLipSyncer.js"></script>
+
     <script>
         var lips = [
             {name: "X", url: "images/Lips_icon/none.jpg", target: "viseme_sil"},
@@ -146,7 +147,19 @@
                     } else {
                         target.influence = 0;
                     }
-                })
+                });
+
+                if(TeethMesh){
+                    TeethMesh.morphTargetManager._targets.forEach(target => {
+                        if (target.name === name) {
+                            target.influence = Expressiveness_range;
+                        } else {
+                            target.influence = 0;
+                        }
+                    });
+                }
+
+
                 // Generate outline list menu
                 generateHTMLOutlineListNodes(currentModel.rows);
             }

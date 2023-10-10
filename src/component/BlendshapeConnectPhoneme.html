@@ -1,107 +1,129 @@
-<!-- Button trigger modal -->
-<button type="button" onclick="OpenBlendShapeLinkModal()" class="btn btn-primary">
-    BlendShape Link
-</button>
+<div>
+    <button type="button" onclick="OpenBlendShapeLinkModal()" class="btn btn-primary">
+        BlendShape Link
+    </button>
 
-<!-- Modal -->
-<div class="modal fade" id="BlendShapeLinkModal" tabindex="-1" aria-labelledby="BlendShapeLinkModal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
 
-                <tr id="row_sample" class="d-none">
-                    <th scope="row">
-                        <img class="lip_icon">
-                        <label class="label_name"></label>
-                    </th>
-                    <td>
-                        <select class="form-control">
-                            <option>none</option>
-                        </select>
-                    </td>
-                </tr>
+    <div class="modal fade" id="BlendShapeLinkModal" tabindex="-1" aria-labelledby="BlendShapeLinkModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">Phonemes Targets</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
 
-                <table class="table table-bordered border-primary" id="lipTable">
-                    <thead>
-                    <tr>
-                        <th scope="col">Phoneme</th>
-                        <th scope="col">Target</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+                    <div class="d-none">
 
-                    </tbody>
-                </table>
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="SaveUpdate()">Save changes</button>
+                        <table class="table table-bordered border-primary">
+                            <thead>
+                            <tr>
+                                <th scope="col">Phoneme</th>
+                                <th scope="col">Target</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr id="row_sample">
+                                <th scope="row">
+                                    <img class="lip_icon">
+                                    <label class="label_name"></label>
+                                </th>
+                                <td>
+                                    <select class="form-control">
+                                        <option>none</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <table class="table table-bordered border-primary" id="lipTable">
+                        <thead>
+                        <tr>
+                            <th scope="col">Phoneme</th>
+                            <th scope="col">Target</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="SaveUpdate()">Save changes</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
+    <script>
 
-    function OpenBlendShapeLinkModal() {
-        jQuery('#BlendShapeLinkModal').modal('show');
+        function OpenBlendShapeLinkModal() {
+            jQuery('#BlendShapeLinkModal').modal('show');
 
-        var tableBody = document.getElementById("lipTable").getElementsByTagName('tbody')[0];
-        var rowSample = document.getElementById("row_sample");
+            var tableBody = document.getElementById("lipTable").getElementsByTagName('tbody')[0];
+            var rowSample = document.getElementById("row_sample");
 
-        var morphTargets = HeadMesh.morphTargetManager._targets;
-        tableBody.innerHTML = "";
-        lips.forEach(function (lip) {
-            var newRow = rowSample.cloneNode(true);
-            newRow.removeAttribute("id");
-            newRow.classList.remove("d-none");
-            newRow.getElementsByClassName("label_name")[0].textContent = lip.name;
-            var imgElement = newRow.getElementsByClassName("lip_icon")[0];
-            imgElement.src = lip.url;
+            var morphTargets = HeadMesh.morphTargetManager._targets;
+            tableBody.innerHTML = "";
 
-            var selectElement = newRow.getElementsByTagName("select")[0];
 
-            // Populate select element with morph target options
-            for (var i = 0; i < morphTargets.length; i++) {
-                var option = document.createElement("option");
-                option.value = morphTargets[i].name;
-                option.text = morphTargets[i].name;
-                selectElement.appendChild(option);
-            }
+            lips.forEach(function (lip) {
+                var newRow = rowSample.cloneNode(true);
+                newRow.removeAttribute("id");
+                newRow.getElementsByClassName("label_name")[0].textContent = lip.name;
+                var imgElement = newRow.getElementsByClassName("lip_icon")[0];
+                imgElement.src = lip.url;
 
-            // Set default selected value based on lip.target
-            selectElement.value = lip.target;
+                var selectElement = newRow.getElementsByTagName("select")[0];
 
-            tableBody.appendChild(newRow);
-        });
-    }
+                // Populate select element with morph target options
+                for (var i = 0; i < morphTargets.length; i++) {
+                    var option = document.createElement("option");
+                    option.value = morphTargets[i].name;
+                    option.text = morphTargets[i].name;
+                    selectElement.appendChild(option);
+                }
 
-    function SaveUpdate() {
-        var updatedLips = [];
+                // Set default selected value based on lip.target
+                selectElement.value = lip.target;
 
-        // Iterate through rows in the table and update lips variable
-        var tableRows = document.getElementById("lipTable").getElementsByTagName('tbody')[0].children;
-        for (var i = 0; i < tableRows.length; i++) {
-            var labelElement = tableRows[i].getElementsByClassName("label_name")[0];
-            var selectElement = tableRows[i].getElementsByTagName("select")[0];
-            var imgElement = tableRows[i].getElementsByClassName("lip_icon")[0];
+                tableBody.appendChild(newRow);
+            });
 
-            var name = labelElement.textContent;
-            var target = selectElement.value;
-            var url = imgElement.src;
 
-            updatedLips.push({name: name, target: target, url: url});
         }
 
-        // Update the original lips variable
-        lips = updatedLips;
+        function SaveUpdate() {
+            var updatedLips = [];
 
-        // Close the modal
-        jQuery('#BlendShapeLinkModal').modal('hide');
-    }
-</script>
+            // Iterate through rows in the table and update lips variable
+            var tableRows = document.getElementById("lipTable").getElementsByTagName('tbody')[0].children;
+            for (var i = 0; i < tableRows.length; i++) {
+                var labelElement = tableRows[i].getElementsByClassName("label_name")[0];
+                var selectElement = tableRows[i].getElementsByTagName("select")[0];
+                var imgElement = tableRows[i].getElementsByClassName("lip_icon")[0];
+
+                var name = labelElement.textContent;
+                var target = selectElement.value;
+                var url = imgElement.src;
+
+                updatedLips.push({name: name, target: target, url: url});
+            }
+
+            // Update the original lips variable
+            lips = updatedLips;
+
+            // Close the modal
+            jQuery('#BlendShapeLinkModal').modal('hide');
+        }
+    </script>
+
+
+
+</div>

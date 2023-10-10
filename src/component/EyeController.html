@@ -1,0 +1,59 @@
+<button id="starteyeButton" onclick="starteyeButton()">Start</button>
+<button id="stopeyeButton" onclick="stopeyeButton()">Stop</button>
+
+<script>
+
+    function starteyeButton(){
+        eyeLookat = true;
+    }
+
+    function stopeyeButton(){
+        eyeLookat = false;
+    }
+
+
+    function lookAt(bone, targetPosition) {
+        let mat = BABYLON.Matrix.LookAtLH(bone.getWorldMatrix().getTranslation(), targetPosition, BABYLON.Vector3.Up());
+        bone.setRotationMatrix(mat);
+
+        console.log(bone.name,targetPosition);
+    }
+
+    scene.registerBeforeRender(() => {
+
+        if (eyeLookat) {
+            var skeleton = scene.skeletons[0];
+            if (skeleton) {
+                // Loop through the bones and find the one with the desired name
+                var eyeLeftBone = null;
+                var eyeRightBone = null;
+                var headBone = null;
+                for (var i = 0; i < skeleton.bones.length; i++) {
+                    var bone = skeleton.bones[i];
+                    if (bone.name === "LeftEye") {
+                        eyeLeftBone = bone;
+                    } else if (bone.name === "RightEye") {
+                        eyeRightBone = bone;
+                    } else if (bone.name === "Head") {
+                        headBone = bone;
+                    }
+
+                    if (eyeLeftBone && eyeRightBone) {
+                        break;
+                    }
+                }
+
+
+                const mouseX = scene.pointerX;
+                const mouseY = scene.pointerY;
+                var mousePos = new BABYLON.Vector3(mouseX, mouseY, 0);
+
+                lookAt(headBone,mousePos);
+
+            }
+        }
+
+    });
+
+
+</script>
