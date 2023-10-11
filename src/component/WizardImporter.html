@@ -4,23 +4,32 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title " id="exampleModalLabel">Set Base Model</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <label>Head Mesh</label>
-                <select id="setHeadMesh" class="form-control"></select>
+                <select id="setHeadMesh" class="form-control">
+                    <option value="">none</option>
+                </select>
 
                 <label>Teeth Mesh</label>
-                <select id="setTeethMesh" class="form-control"></select>
+                <select id="setTeethMesh" class="form-control">
+                    <option value="">none</option>
+                </select>
 
                 <label>Body Mesh</label>
-                <select id="setBodyMesh" class="form-control"></select>
+                <select id="setBodyMesh" class="form-control">
+                    <option value="">none</option>
+                </select>
 
                 <label>eye left Mesh</label>
-                <select id="setEyeLeftMesh" class="form-control"></select>
+                <select id="setEyeLeftMesh" class="form-control">
+                    <option value="">none</option>
+                </select>
 
                 <label>eye right Mesh</label>
-                <select id="setEyeRightMesh" class="form-control"></select>
+                <select id="setEyeRightMesh" class="form-control">
+                    <option value="">none</option>
+                </select>
 
             </div>
             <div class="modal-footer">
@@ -54,38 +63,44 @@
             });
         }
 
-        function setDropdownValue(dropdownId, keyword) {
+        // Function to create option element with specified value and text
+        function createOption(value, text) {
+            const option = document.createElement('option');
+            option.value = value;
+            option.text = text;
+            return option;
+        }
+
+        // Add "none" option as the first item in each dropdown
+        function addNoneOption(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            dropdown.appendChild(createOption('', 'none'));
+        }
+
+        // Set dropdown values and add "none" option
+        function setDropdownAndAddNoneOption(dropdownId, keyword) {
             const nearestMatch = findNearestMatch(keyword);
+            const dropdown = document.getElementById(dropdownId);
+
+            dropdown.innerHTML = objectNames.map(function (object) {
+                return `<option value="${object.id}">${object.name}</option>`;
+            }).join('');
+
+            addNoneOption(dropdownId);
+
             if (nearestMatch) {
-                document.getElementById(dropdownId).value = nearestMatch.id;
+                dropdown.value = nearestMatch.id;
             }
         }
 
-        document.getElementById("setHeadMesh").innerHTML = objectNames.map(function (object) {
-            return `<option value="${object.id}">${object.name}</option>`;
-        }).join('');
-        setDropdownValue("setHeadMesh", "head");
-
-        document.getElementById("setTeethMesh").innerHTML = objectNames.map(function (object) {
-            return `<option value="${object.id}">${object.name}</option>`;
-        }).join('');
-        setDropdownValue("setTeethMesh", "teeth");
-
-        document.getElementById("setBodyMesh").innerHTML = objectNames.map(function (object) {
-            return `<option value="${object.id}">${object.name}</option>`;
-        }).join('');
-        setDropdownValue("setBodyMesh", "body");
-
-        document.getElementById("setEyeLeftMesh").innerHTML = objectNames.map(function (object) {
-            return `<option value="${object.id}">${object.name}</option>`;
-        }).join('');
-        setDropdownValue("setEyeLeftMesh", "eyeleft");
-
-        document.getElementById("setEyeRightMesh").innerHTML = objectNames.map(function (object) {
-            return `<option value="${object.id}">${object.name}</option>`;
-        }).join('');
-        setDropdownValue("setEyeRightMesh", "eyeright");
+        // Populate dropdowns and set values
+        setDropdownAndAddNoneOption("setHeadMesh", "head");
+        setDropdownAndAddNoneOption("setTeethMesh", "teeth");
+        setDropdownAndAddNoneOption("setBodyMesh", "body");
+        setDropdownAndAddNoneOption("setEyeLeftMesh", "eyeleft");
+        setDropdownAndAddNoneOption("setEyeRightMesh", "eyeright");
     }
+
 
 
     function SaveSelectedBaseModel() {

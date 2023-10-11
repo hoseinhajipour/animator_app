@@ -21,6 +21,19 @@ var EyeRightMesh;
 
 var eyeLookat = false;
 
+
+var lips = [
+    {name: "X", url: "images/Lips_icon/none.jpg", target: "viseme_sil"},
+    {name: "A", url: "images/Lips_icon/ah.jpg", target: "viseme_aa"},
+    {name: "B", url: "images/Lips_icon/b_m_p.jpg", target: "viseme_PP"},
+    {name: "C", url: "images/Lips_icon/ch_j.jpg", target: "viseme_CH"},
+    {name: "D", url: "images/Lips_icon/t_l_d.jpg", target: "viseme_DD"},
+    {name: "E", url: "images/Lips_icon/ee.jpg", target: "viseme_E"},
+    {name: "F", url: "images/Lips_icon/f_v.jpg", target: "viseme_FF"},
+    {name: "G", url: "images/Lips_icon/k_g.jpg", target: "viseme_I"},
+    {name: "H", url: "images/Lips_icon/th.jpg", target: "viseme_TH"},
+];
+
 const createScene = function (laoadformurl = null) {
     const scene = new BABYLON.Scene(engine);
     Maincamera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 1, new BABYLON.Vector3(0, 0, 0), scene);
@@ -211,7 +224,7 @@ engine.runRenderLoop(function () {
 window.addEventListener("resize", function () {
     engine.resize();
 });
-scene.debugLayer.show();
+//scene.debugLayer.show();
 //scene.debugLayer.show({ embedMode: true });
 document.addEventListener("keydown", function (event) {
     // Check the key code and toggle gizmos accordingly

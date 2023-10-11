@@ -4,7 +4,7 @@ const fileInput = document.getElementById('lipsync_audio_file');
 var MasterAudio = document.getElementById('lipsync_audio');
 var inputAudio;
 var excludeTargets = [];
-var blinkDuration = 5; // Duration of the blink in frames
+var blinkDuration = 10; // Duration of the blink in frames
 var blinkWait = 50; // Duration of the blink in frames
 fileInput.addEventListener('change', function () {
     const file = event.target.files[0];
@@ -74,7 +74,7 @@ function addVisemeKeyframeByTime(name, frame_millisecond) {
         const currentModel = timeline.getModel();
         // Find the 'Viseme' row in the current model
         const visemeRow = currentModel.rows.find(row => row.title === 'Viseme');
-        var Expressiveness_range = 1;
+        var Expressiveness_range = parseInt(document.getElementById("Expressiveness_range").value) / 100;
 
         // If 'Viseme' row exists, check if a keyframe with the same 'val' property already exists
         if (visemeRow) {
@@ -155,6 +155,7 @@ function combineKeyFrames(animationGroup, morphVisemeKeys, audio_duration, _Head
         morphTargetAnimation.setKeys(morphTargetKeys);
         viseme.animations.push(morphTargetAnimation);
         animationGroup.addTargetedAnimation(morphTargetAnimation, viseme);
+        console.log(animationGroup);
 
     }
 }

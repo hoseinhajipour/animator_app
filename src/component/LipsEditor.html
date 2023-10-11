@@ -50,7 +50,8 @@
     <audio id="lipsync_audio" controls></audio>
     <button class="btn btn-primary form-control my-3" id="runButton">
         Auto LipSync
-        <div id="lipsync_loading" class="spinner-border spinner-border-sm text-light" style="display: none" role="status">
+        <div id="lipsync_loading" class="spinner-border spinner-border-sm text-light" style="display: none"
+             role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </button>
@@ -59,17 +60,7 @@
     <script src="./js/AutoLipSyncer.js"></script>
 
     <script>
-        var lips = [
-            {name: "X", url: "images/Lips_icon/none.jpg", target: "viseme_sil"},
-            {name: "A", url: "images/Lips_icon/ah.jpg", target: "viseme_aa"},
-            {name: "B", url: "images/Lips_icon/b_m_p.jpg", target: "viseme_PP"},
-            {name: "C", url: "images/Lips_icon/ch_j.jpg", target: "viseme_CH"},
-            {name: "D", url: "images/Lips_icon/t_l_d.jpg", target: "viseme_DD"},
-            {name: "E", url: "images/Lips_icon/ee.jpg", target: "viseme_E"},
-            {name: "F", url: "images/Lips_icon/f_v.jpg", target: "viseme_FF"},
-            {name: "G", url: "images/Lips_icon/k_g.jpg", target: "viseme_I"},
-            {name: "H", url: "images/Lips_icon/th.jpg", target: "viseme_TH"},
-        ];
+
 
         function updateActiveButtonByName(name) {
             // Remove active_outline class from all buttons
@@ -93,13 +84,65 @@
                 // Handle click event for the lips element if needed
                 updateActiveButtonByName(target);
 
+                addVisemeKeyframeTimelineView(target);
+
                 addVisemeKeyframe(target);
             });
 
             return lipsRowSample;
         }
 
-        function addVisemeKeyframe(name) {
+
+        function addVisemeKeyframe(viseme_name) {
+
+            var title = "Head";
+            var FaceAnimationGroup = scene.getAnimationGroupByName(HeadMesh.name + "_talk_" + title);
+
+            if (FaceAnimationGroup == null) {
+                FaceAnimationGroup = new BABYLON.AnimationGroup(HeadMesh.name + "_talk_" + title);
+            }
+
+
+
+            var Expressiveness_range = parseInt(document.getElementById("Expressiveness_range").value) / 100;
+
+
+            var morphVisemeKeys = [];
+
+            var viseme = findMorph(HeadMesh.morphTargetManager, viseme_name);
+            if (viseme) {
+                var start = millisecondsToFrames(timeline.getTime());
+                var end = start + 12;
+                var mid = start + Math.round((end - start) / 2);
+
+                var morphTargetKeys = [];
+                morphTargetKeys.push({
+                    frame: start,
+                    value: 0.0
+                });
+                morphTargetKeys.push({
+                    frame: mid,
+                    value:Expressiveness_range
+                });
+                morphTargetKeys.push({
+                    frame: end,
+                    value: 0.0
+                });
+
+                if (!morphVisemeKeys[viseme_name]) {
+                    morphVisemeKeys[viseme_name] = [];
+                }
+                morphVisemeKeys[viseme_name].push(morphTargetKeys);
+            }
+
+
+            combineKeyFrames(FaceAnimationGroup, morphVisemeKeys, 3, HeadMesh);
+
+            updateObjectNamesFromScene();
+
+        }
+
+        function addVisemeKeyframeTimelineView(name) {
             if (timeline) {
                 const currentModel = timeline.getModel();
                 // Find the 'Viseme' row in the current model
@@ -149,7 +192,7 @@
                     }
                 });
 
-                if(TeethMesh){
+                if (TeethMesh) {
                     TeethMesh.morphTargetManager._targets.forEach(target => {
                         if (target.name === name) {
                             target.influence = Expressiveness_range;
@@ -181,7 +224,7 @@
 
             var name = getCurrentViseme();
             if (name) {
-                addVisemeKeyframe(name);
+                addVisemeKeyframeTimelineView(name);
             }
         });
 
@@ -200,7 +243,7 @@
 
             var name = getCurrentViseme();
             if (name) {
-                addVisemeKeyframe(name);
+                addVisemeKeyframeTimelineView(name);
             }
         });
 

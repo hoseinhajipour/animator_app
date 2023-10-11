@@ -42,7 +42,7 @@
             li.textContent = obj.name;
             li.setAttribute("data-id", obj.id); // Set the data-id attribute with the object's ID
             li.addEventListener("click", function () {
-                selectObject(obj.id); // Pass the object's ID when selecting
+             //   selectObject(obj.id); // Pass the object's ID when selecting
             });
 
             objectList.appendChild(li);
@@ -54,7 +54,7 @@
             let li = document.createElement("li");
             li.textContent = light.name;
             li.addEventListener("click", function () {
-                selectLight(light.name);
+              //  selectLight(light.name);
             });
             lightList.appendChild(li);
         });
@@ -71,12 +71,10 @@
             anim.textContent = animation.name;
             anim.setAttribute("data-id", index); // Set the data-id attribute with the object's ID
             anim.addEventListener("click", function () {
-                selectAnim(index); // Pass the current index when selecting
+              //  selectAnim(index); // Pass the current index when selecting
             });
             AnimationList.appendChild(anim);
         });
-
-        console.log(scene.skeletons);
     }
 
     function selectAnim(RowID) {
