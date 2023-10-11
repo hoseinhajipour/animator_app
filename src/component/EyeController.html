@@ -1,59 +1,43 @@
-<button id="starteyeButton" onclick="starteyeButton()">Start</button>
-<button id="stopeyeButton" onclick="stopeyeButton()">Stop</button>
+<button id="starteyeButton" class="btn btn-primary" onclick="starteyeButton()">Start</button>
+<button id="stopeyeButton" class="btn btn-primary" onclick="stopeyeButton()">Stop</button>
 
 <script>
 
-    function starteyeButton(){
+    var eyeLeftBone = null;
+    var eyeRightBone = null;
+    var headBone = null;
+
+    function starteyeButton() {
         eyeLookat = true;
+        var skeleton = scene.skeletons[0];
+        // Find bones by name
+        skeleton.bones.forEach(bone => {
+            switch (bone.name) {
+                case "LeftEye":
+                    eyeLeftBone = bone;
+                    break;
+                case "RightEye":
+                    eyeRightBone = bone;
+                    break;
+                case "Head":
+                    headBone = bone;
+                    break;
+            }
+        });
+
+
+        var lookAtCtl = new BABYLON.BoneLookController(HeadMesh, headBone, Maincamera.position, {
+            adjustYaw: 0,
+            adjustPitch: 0,
+            adjustRoll: 15.70
+        });
+
+        scene.registerBeforeRender(function () {
+            lookAtCtl.update();
+        });
     }
 
-    function stopeyeButton(){
+    function stopeyeButton() {
         eyeLookat = false;
     }
-
-
-
-    document.addEventListener('mousemove', e => {
-        if (eyeLookat) {
-            var skeleton = scene.skeletons[0];
-            if (skeleton) {
-                var eyeLeftBone = null;
-                var eyeRightBone = null;
-                var headBone = null;
-
-                // Find bones by name
-                skeleton.bones.forEach(bone => {
-                    switch (bone.name) {
-                        case "LeftEye":
-                            eyeLeftBone = bone;
-                            break;
-                        case "RightEye":
-                            eyeRightBone = bone;
-                            break;
-                        case "Head":
-                            headBone = bone;
-                            break;
-                    }
-                });
-
-                // Check if all required bones are found
-                if (eyeLeftBone && eyeRightBone && headBone) {
-                    // Calculate yaw, pitch, and roll based on mouse coordinates
-                    var yaw = (e.clientX - window.innerWidth / 2) / window.innerWidth * 2 * Math.PI;
-                    var pitch = (e.clientY - window.innerHeight / 2) / window.innerHeight * 2 * Math.PI;
-                    var roll = 45; // Set a fixed roll angle (in degrees)
-
-                    // Apply yaw, pitch, and roll to the head bone
-                    headBone.rotation.y = yaw;
-                    headBone.rotation.x = pitch;
-                    headBone.rotation.z = roll;
-
-                    headBone.setRotationQuaternion(BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0), BABYLON.Space.WORLD, eyeLeftBone);
-                }
-            }
-        }
-    });
-
-
-
 </script>

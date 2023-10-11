@@ -32,6 +32,7 @@ const createWindow = () => {
                     accelerator: 'CmdOrCtrl+N',
                     click: () => {
                         // Logic for new file action
+                        mainWindow.webContents.executeJavaScript("location.reload();");
                     }
                 },
                 {

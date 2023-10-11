@@ -4,7 +4,7 @@ const fileInput = document.getElementById('lipsync_audio_file');
 var MasterAudio = document.getElementById('lipsync_audio');
 var inputAudio;
 var excludeTargets = [];
-var blinkDuration = 10; // Duration of the blink in frames
+var blinkDuration = 5; // Duration of the blink in frames
 var blinkWait = 50; // Duration of the blink in frames
 fileInput.addEventListener('change', function () {
     const file = event.target.files[0];
