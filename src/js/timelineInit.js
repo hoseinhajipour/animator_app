@@ -1,6 +1,6 @@
 var outlineContainer = document.getElementById('outline-container');
 playing = false;
-playStep = 60;
+playStep = 30;
 
 // Automatic tracking should be turned off when user interaction happened.
 trackTimelineMovement = false;
