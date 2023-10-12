@@ -152,7 +152,7 @@ const createWindow = () => {
         splash.close();
         mainWindow.show();
         mainWindow.maximize();
-        mainWindow.webContents.openDevTools();
+        //mainWindow.webContents.openDevTools();
     }, 5000);
 
     ipcMain.on('run-command', (event, inputAudio) => {

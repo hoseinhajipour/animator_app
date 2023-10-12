@@ -45,12 +45,12 @@ const createScene = function (laoadformurl = null) {
 
     Maincamera.setTarget(new BABYLON.Vector3(0, 1.5, 0));
     Maincamera.attachControl(canvas, true);
-    this.Maincamera.wheelPrecision = 100;
+    this.Maincamera.wheelPrecision = 500;
     // this.Maincamera.zoomToMouseLocation = true;
 
 
     const light_0 = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-    light_0.intensity = 0.7;
+    light_0.intensity =1;
     const light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(0, -1, 1), scene);
     light.position = new BABYLON.Vector3(0, 15, -30);
     gizmoManager = new BABYLON.GizmoManager(scene);

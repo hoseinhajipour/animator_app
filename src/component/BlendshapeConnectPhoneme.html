@@ -1,10 +1,11 @@
 <div>
-    <button type="button" onclick="OpenBlendShapeLinkModal()" class="btn btn-primary">
+    <button type="button" onclick="OpenBlendShapeLinkModal()" class="btn btn-primary form-control">
         BlendShape Link
     </button>
 
 
-    <div class="modal fade" id="BlendShapeLinkModal" tabindex="-1" aria-labelledby="BlendShapeLinkModal" aria-hidden="true">
+    <div class="modal fade" id="BlendShapeLinkModal" tabindex="-1" aria-labelledby="BlendShapeLinkModal"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -64,37 +65,39 @@
     <script>
 
         function OpenBlendShapeLinkModal() {
-            jQuery('#BlendShapeLinkModal').modal('show');
 
-            var tableBody = document.getElementById("lipTable").getElementsByTagName('tbody')[0];
-            var rowSample = document.getElementById("row_sample");
+            if (HeadMesh) {
+                jQuery('#BlendShapeLinkModal').modal('show');
 
-            var morphTargets = HeadMesh.morphTargetManager._targets;
-            tableBody.innerHTML = "";
+                var tableBody = document.getElementById("lipTable").getElementsByTagName('tbody')[0];
+                var rowSample = document.getElementById("row_sample");
 
+                var morphTargets = HeadMesh.morphTargetManager._targets;
+                tableBody.innerHTML = "";
 
-            lips.forEach(function (lip) {
-                var newRow = rowSample.cloneNode(true);
-                newRow.removeAttribute("id");
-                newRow.getElementsByClassName("label_name")[0].textContent = lip.name;
-                var imgElement = newRow.getElementsByClassName("lip_icon")[0];
-                imgElement.src = lip.url;
+                lips.forEach(function (lip) {
+                    var newRow = rowSample.cloneNode(true);
+                    newRow.removeAttribute("id");
+                    newRow.getElementsByClassName("label_name")[0].textContent = lip.name;
+                    var imgElement = newRow.getElementsByClassName("lip_icon")[0];
+                    imgElement.src = lip.url;
 
-                var selectElement = newRow.getElementsByTagName("select")[0];
+                    var selectElement = newRow.getElementsByTagName("select")[0];
 
-                // Populate select element with morph target options
-                for (var i = 0; i < morphTargets.length; i++) {
-                    var option = document.createElement("option");
-                    option.value = morphTargets[i].name;
-                    option.text = morphTargets[i].name;
-                    selectElement.appendChild(option);
-                }
+                    // Populate select element with morph target options
+                    for (var i = 0; i < morphTargets.length; i++) {
+                        var option = document.createElement("option");
+                        option.value = morphTargets[i].name;
+                        option.text = morphTargets[i].name;
+                        selectElement.appendChild(option);
+                    }
 
-                // Set default selected value based on lip.target
-                selectElement.value = lip.target;
+                    // Set default selected value based on lip.target
+                    selectElement.value = lip.target;
 
-                tableBody.appendChild(newRow);
-            });
+                    tableBody.appendChild(newRow);
+                });
+            }
 
 
         }
@@ -123,7 +126,6 @@
             jQuery('#BlendShapeLinkModal').modal('hide');
         }
     </script>
-
 
 
 </div>

@@ -1,5 +1,5 @@
 <div>
-    <button class="btn btn-light" onclick="GenerateMorphList()">Generate List</button>
+    <button class="btn btn-light form-control my-3" onclick="GenerateMorphList()">Generate List</button>
     <div id="morphTargetsList" class="row"></div>
 
     <script>
@@ -15,7 +15,7 @@
                         parent.appendChild(img);
                         target.influence = 0;
                         resolve(); // Resolve the promise after capturing the image and setting influence back to 0
-                    },10); // 100 milliseconds
+                    },20); // 100 milliseconds
                 });
             });
         }

@@ -12,7 +12,7 @@ function generateModel() {
             title: 'Viseme',
             keyframes: [],
         },
-        /*
+
         {
             title: 'Expression',
             keyframes: [
@@ -49,8 +49,6 @@ function generateModel() {
                 }
             ],
         },
-        Wz
-         */
     ];
     return rows;
 }
