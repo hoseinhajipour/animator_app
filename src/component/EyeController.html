@@ -9,28 +9,31 @@
 
     function starteyeButton() {
         eyeLookat = true;
-        var skeleton = scene.skeletons[0];
-        // Find bones by name
-        skeleton.bones.forEach(bone => {
-            switch (bone.name) {
-                case "LeftEye":
-                    eyeLeftBone = bone;
-                    break;
-                case "RightEye":
-                    eyeRightBone = bone;
-                    break;
-                case "Head":
-                    headBone = bone;
-                    break;
-            }
-        });
+
+        if (headBone == null) {
+            var skeleton = scene.skeletons[0];
+            // Find bones by name
+            skeleton.bones.forEach(bone => {
+                switch (bone.name) {
+                    case "LeftEye":
+                        eyeLeftBone = bone;
+                        break;
+                    case "RightEye":
+                        eyeRightBone = bone;
+                        break;
+                    case "Head":
+                        headBone = bone;
+                        break;
+                }
+            });
+        }
 
 
         var lookAtCtl = new BABYLON.BoneLookController(HeadMesh, headBone, Maincamera.position, {
             adjustYaw: 0,
             adjustPitch: 0,
             adjustRoll: 15.70
-           // adjustRoll:  BABYLON.Tools.ToDegrees(90)
+            // adjustRoll:  BABYLON.Tools.ToDegrees(90)
         });
 
         scene.registerBeforeRender(function () {

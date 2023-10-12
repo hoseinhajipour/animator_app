@@ -155,8 +155,6 @@ function combineKeyFrames(animationGroup, morphVisemeKeys, audio_duration, _Head
         morphTargetAnimation.setKeys(morphTargetKeys);
         viseme.animations.push(morphTargetAnimation);
         animationGroup.addTargetedAnimation(morphTargetAnimation, viseme);
-        console.log(animationGroup);
-
     }
 }
 

@@ -102,42 +102,78 @@
                 FaceAnimationGroup = new BABYLON.AnimationGroup(HeadMesh.name + "_talk_" + title);
             }
 
-
-
             var Expressiveness_range = parseInt(document.getElementById("Expressiveness_range").value) / 100;
-
 
             var morphVisemeKeys = [];
 
             var viseme = findMorph(HeadMesh.morphTargetManager, viseme_name);
+
             if (viseme) {
                 var start = millisecondsToFrames(timeline.getTime());
                 var end = start + 12;
                 var mid = start + Math.round((end - start) / 2);
 
-                var morphTargetKeys = [];
-                morphTargetKeys.push({
+                var newMorphTargetKeys = [];
+                newMorphTargetKeys.push({
                     frame: start,
                     value: 0.0
                 });
-                morphTargetKeys.push({
+                newMorphTargetKeys.push({
                     frame: mid,
-                    value:Expressiveness_range
+                    value: Expressiveness_range
                 });
-                morphTargetKeys.push({
+                newMorphTargetKeys.push({
                     frame: end,
                     value: 0.0
                 });
-
-                if (!morphVisemeKeys[viseme_name]) {
-                    morphVisemeKeys[viseme_name] = [];
-                }
-                morphVisemeKeys[viseme_name].push(morphTargetKeys);
             }
+            var morphTargetAnimation = viseme.animations.find(function (animation) {
+                return animation.name === viseme_name;
+            });
+
+            if (morphTargetAnimation) {
+                var currentkeys = morphTargetAnimation._keys;
+           //     var combinedKeys = currentkeys.concat(newMorphTargetKeys);
 
 
-            combineKeyFrames(FaceAnimationGroup, morphVisemeKeys, 3, HeadMesh);
 
+                for (var i = 0; i < newMorphTargetKeys.length; i++) {
+                    var index = currentkeys.findIndex(function(key) {
+                        return key.frame === newMorphTargetKeys[i].frame;
+                    });
+                    if (index !== -1) {
+                        // If duplicate frame is found, replace the value in currentkeys
+                        currentkeys[index].value = newMorphTargetKeys[i].value;
+                    } else {
+                        // If frame is not duplicate, add it to currentkeys
+                        currentkeys.push({
+                            frame: newMorphTargetKeys[i].frame,
+                            value: newMorphTargetKeys[i].value
+                        });
+                    }
+                }
+
+                // Sort currentkeys based on frame values
+                currentkeys.sort(function(a, b) {
+                    return a.frame - b.frame;
+                });
+
+                console.log(currentkeys);
+
+                morphTargetAnimation.setKeys(currentkeys);
+                FaceAnimationGroup.normalize(0, currentkeys[currentkeys.length - 1].frame);
+            } else {
+                morphTargetAnimation = new BABYLON.Animation(
+                    viseme_name,
+                    "influence",
+                    frameRate,
+                    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+                    BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
+                );
+                morphTargetAnimation.setKeys(newMorphTargetKeys);
+                viseme.animations.push(morphTargetAnimation);
+                FaceAnimationGroup.addTargetedAnimation(morphTargetAnimation, viseme);
+            }
             updateObjectNamesFromScene();
 
         }

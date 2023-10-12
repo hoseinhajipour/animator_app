@@ -112,16 +112,7 @@ function onStopClick() {
         timeline.setOptions({timelineDraggable: true});
     }
 
-    //     console.log(scene._mainSoundTrack.soundCollection);
-
-    // Iterate through all active sounds and stop each one
-    if (scene._mainSoundTrack) {
-        for (const sound of scene._mainSoundTrack.soundCollection) {
-            sound.stop();
-        }
-    }
-
-    if(MasterAudio){
+    if(MasterAudio.src){
         MasterAudio.pause();
         MasterAudio.currentTime = 0;
     }
