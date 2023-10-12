@@ -10,6 +10,11 @@ if (require('electron-squirrel-startup')) {
 
 
 const createWindow = () => {
+
+
+
+
+
     // Create the browser window.
     const mainWindow = new BrowserWindow({
         width: 1920,
@@ -21,6 +26,12 @@ const createWindow = () => {
             preload: path.join(__dirname, 'preload.js'),
         },
     });
+
+
+
+
+
+
 
 
     const template = [
@@ -131,9 +142,31 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
 
-    // Open the DevTools.
-    mainWindow.webContents.openDevTools();
 
+
+
+
+
+    var splash = new BrowserWindow({
+        width: 960,
+        height: 540,
+        transparent: true,
+        frame: false,
+        alwaysOnTop: true
+    });
+    splash.loadFile(path.join(__dirname, 'splash.html'));
+    splash.center();
+
+    mainWindow.hide();
+    splash.show();
+
+
+    setTimeout(function () {
+        splash.close();
+        mainWindow.show();
+        mainWindow.maximize();
+        mainWindow.webContents.openDevTools();
+    }, 5000);
 
     ipcMain.on('run-command', (event, inputAudio) => {
 

@@ -1,3 +1,5 @@
+<b>Head Lookat Mouse</b>
+<br/>
 <button id="starteyeButton" class="btn btn-primary" onclick="starteyeButton()">Start</button>
 <button id="stopeyeButton" class="btn btn-primary" onclick="stopeyeButton()">Stop</button>
 
@@ -27,19 +29,27 @@
                 }
             });
         }
-
-
-        var lookAtCtl = new BABYLON.BoneLookController(HeadMesh, headBone, Maincamera.position, {
-            adjustYaw: 0,
-            adjustPitch: 0,
-            adjustRoll: 15.70
-            // adjustRoll:  BABYLON.Tools.ToDegrees(90)
-        });
-
-        scene.registerBeforeRender(function () {
-            lookAtCtl.update();
-        });
     }
+
+    canvas.addEventListener("mousemove", function (event) {
+
+        if (eyeLookat) {
+            var mouseX = ((event.clientX / window.innerWidth) * 2 - 1 ) *-2;  // Adjust the calculation for X-axis
+            var mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            var mousePos = new BABYLON.Vector3(mouseX, mouseY * 4, 3);
+
+            var lookAtCtl = new BABYLON.BoneLookController(HeadMesh, headBone, mousePos, {
+                adjustYaw: 0,
+                adjustPitch: 0,
+                adjustRoll: 15.70
+            });
+
+            scene.registerBeforeRender(function () {
+                lookAtCtl.update();
+            });
+        }
+    });
+
 
     function stopeyeButton() {
         eyeLookat = false;
