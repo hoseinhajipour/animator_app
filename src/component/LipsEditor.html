@@ -56,11 +56,59 @@
         </div>
     </button>
 
+    <button class="btn btn-warning" onclick="BakeKeyframe()">Bake Keyframe</button>
+    <button class="btn btn-warning" onclick="BakeApplyAutoblink()">Apply Auto blink</button>
+
 
     <script src="./js/AutoLipSyncer.js"></script>
 
     <script>
+        function MergeAllAnim() {
 
+            var mergedAnimationGroup = BABYLON.AnimationGroup.MergeAnimationGroups(scene.animationGroups, true, true);
+
+            console.log(mergedAnimationGroup);
+
+        }
+
+        function BakeApplyAutoblink() {
+
+            var maxframe = 0;
+            scene.animationGroups.forEach(function (animationGroup) {
+                if (maxframe < animationGroup.to) {
+                    maxframe = animationGroup.to;
+                }
+            });
+            var Endsecond = maxframe / frameRate;
+
+            var title = "Eyes";
+            var EyesAnimationGroup = scene.getAnimationGroupByName(HeadMesh.name + "_talk_" + title);
+
+            if (EyesAnimationGroup == null) {
+                EyesAnimationGroup = new BABYLON.AnimationGroup(HeadMesh.name + "_talk_" + title);
+                EyesAnimationGroup.playOrder = 0;
+            }
+
+            AutoBlinkAnimate(EyesAnimationGroup, Endsecond, HeadMesh);
+
+            updateObjectNamesFromScene();
+        }
+
+        function BakeKeyframe() {
+
+            var maxframe = 0;
+            scene.animationGroups.forEach(function (animationGroup) {
+                if (maxframe < animationGroup.to) {
+                    maxframe = animationGroup.to;
+                }
+            });
+            var Endsecond = maxframe / frameRate;
+            scene.animationGroups.forEach(function (animationGroup) {
+                animationGroup.normalize(0, maxframe);
+                AllZeroKeyframes(animationGroup, Endsecond, HeadMesh);
+            });
+
+        }
 
         function updateActiveButtonByName(name) {
             // Remove active_outline class from all buttons
@@ -102,6 +150,7 @@
                 FaceAnimationGroup = new BABYLON.AnimationGroup(HeadMesh.name + "_talk_" + title);
             }
 
+            //  FaceAnimationGroup.weight = 1;
             var Expressiveness_range = parseInt(document.getElementById("Expressiveness_range").value) / 100;
 
             var morphVisemeKeys = [];
@@ -133,12 +182,9 @@
 
             if (morphTargetAnimation) {
                 var currentkeys = morphTargetAnimation._keys;
-           //     var combinedKeys = currentkeys.concat(newMorphTargetKeys);
-
-
 
                 for (var i = 0; i < newMorphTargetKeys.length; i++) {
-                    var index = currentkeys.findIndex(function(key) {
+                    var index = currentkeys.findIndex(function (key) {
                         return key.frame === newMorphTargetKeys[i].frame;
                     });
                     if (index !== -1) {
@@ -154,7 +200,7 @@
                 }
 
                 // Sort currentkeys based on frame values
-                currentkeys.sort(function(a, b) {
+                currentkeys.sort(function (a, b) {
                     return a.frame - b.frame;
                 });
 
@@ -175,7 +221,6 @@
                 FaceAnimationGroup.addTargetedAnimation(morphTargetAnimation, viseme);
             }
             updateObjectNamesFromScene();
-
         }
 
         function addVisemeKeyframeTimelineView(name) {

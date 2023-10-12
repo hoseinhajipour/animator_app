@@ -1,15 +1,5 @@
-
 function ExportScene() {
-    var maxframe = 0;
-    scene.animationGroups.forEach(function (animationGroup) {
-        if (maxframe < animationGroup.to) {
-            maxframe = animationGroup.to;
-        }
-    });
-
-    scene.animationGroups.forEach(function (animationGroup) {
-        animationGroup.normalize(0, maxframe);
-    });
+    BakeKeyframe();
 
     const skybox = scene.getMeshByName("SkyBox"); // Replace 'yourSkyboxName' with the actual name of your skybox
     let options = {

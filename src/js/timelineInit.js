@@ -12,6 +12,7 @@ function generateModel() {
             title: 'Viseme',
             keyframes: [],
         },
+        /*
         {
             title: 'Expression',
             keyframes: [
@@ -48,6 +49,8 @@ function generateModel() {
                 }
             ],
         },
+        Wz
+         */
     ];
     return rows;
 }
@@ -112,7 +115,7 @@ function onStopClick() {
         timeline.setOptions({timelineDraggable: true});
     }
 
-    if(MasterAudio.src){
+    if (MasterAudio.src) {
         MasterAudio.pause();
         MasterAudio.currentTime = 0;
     }
@@ -130,9 +133,10 @@ function showActivePositionInformation() {
     }
 }
 
+var currentSelected;
 timeline.onSelected(function (obj) {
-    console.log(obj);
 
+    currentSelected = obj.selected;
     if (obj.selected[0]) {
         if (obj.selected[0].type && obj.selected[0].type === "Viseme") {
             updateActiveButtonByName(obj.selected[0].value);
@@ -257,7 +261,38 @@ function noneMode() {
 
 function removeKeyframe() {
     if (timeline) {
-        // Add keyframe
+        // removeKey keyframe
+        currentSelected.forEach(SeletedFrame => {
+            const frameToRemove = millisecondsToFrames(SeletedFrame.val);
+
+            if (SeletedFrame.type === "Viseme") {
+                var viseme_name = SeletedFrame.value;
+                var viseme = findMorph(HeadMesh.morphTargetManager, viseme_name);
+                var morphTargetAnimation = viseme.animations.find(function (animation) {
+                    return animation.name === viseme_name;
+                });
+                if (morphTargetAnimation && morphTargetAnimation._keys) {
+                    // Find the indices of the keyframes to remove
+                    const keyframeIndicesToRemove = [];
+                    for (let i = 0; i < morphTargetAnimation._keys.length; i++) {
+                        if (morphTargetAnimation._keys[i].frame >= frameToRemove && keyframeIndicesToRemove.length < 3) {
+                            keyframeIndicesToRemove.push(i);
+                        }
+                    }
+                    // Remove the keyframes from morphTargetAnimation
+                    for (let i = keyframeIndicesToRemove.length - 1; i >= 0; i--) {
+                        morphTargetAnimation._keys.splice(keyframeIndicesToRemove[i], 1);
+                    }
+
+                } else {
+                    console.error("Invalid morphTargetAnimation or keys array.");
+                }
+            }
+
+
+        })
+
+
         const currentModel = timeline.getModel();
         if (currentModel && currentModel.rows) {
             currentModel.rows.forEach((row) => {
@@ -266,8 +301,9 @@ function removeKeyframe() {
                 }
             });
         }
-
         timeline.setModel(currentModel);
+
+
     }
 }
 
@@ -317,7 +353,7 @@ function onPlayClick(event) {
         });
 
 
-        if(MasterAudio){
+        if (MasterAudio) {
             MasterAudio.play();
         }
     }
@@ -331,7 +367,7 @@ function onPauseClick(event) {
         animationGroups.forEach(group => {
             group.stop();
         });
-        if(MasterAudio){
+        if (MasterAudio) {
             MasterAudio.pause();
         }
 

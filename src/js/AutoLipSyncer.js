@@ -28,8 +28,8 @@ ipcRenderer.on('command-done', (event, code, result) => {
     lipsyncData.mouthCues.forEach(mouthCue => {
         addVisemeKeyframeByTime(mapViseme(mouthCue.value), secondsToMilliseconds(mouthCue.start));
     });
-    lipSync_(lipsyncData.mouthCues, lipsyncData.metadata.duration, HeadMesh, "Head", 0);
-    lipSync_(lipsyncData.mouthCues, lipsyncData.metadata.duration, TeethMesh, "Teeth", 0);
+    lipSync_(lipsyncData.mouthCues, lipsyncData.metadata.duration, HeadMesh, "Head", 0, 1);
+    lipSync_(lipsyncData.mouthCues, lipsyncData.metadata.duration, TeethMesh, "Teeth", 0, 2);
 
 });
 
@@ -221,26 +221,28 @@ function AllZeroKeyframes(animationGroup, audio_duration, _HeadMesh) {
             resampleAnimation(anim, 1);
         } else {
             // Create keyframes for zero influence
+            /*
+                        for (let j = 0; j < totalFrames; j++) {
+                            morphTargetKeys.push({frame: j, value: 0.0});
+                        }
 
-            for (let j = 0; j < totalFrames; j++) {
-                morphTargetKeys.push({frame: j, value: 0.0});
-            }
+                        // Create an animation for the morph target
+                        var zeroAnimation = new BABYLON.Animation(
+                            morphTarget.name,
+                            "influence",
+                            frameRate,
+                            BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+                            BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
+                        );
+                        zeroAnimation.setKeys(morphTargetKeys);
 
-            // Create an animation for the morph target
-            var zeroAnimation = new BABYLON.Animation(
-                morphTarget.name,
-                "influence",
-                frameRate,
-                BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-                BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
-            );
-            zeroAnimation.setKeys(morphTargetKeys);
+                        // Add the animation to the morph target
+                        morphTarget.animations.push(zeroAnimation);
 
-            // Add the animation to the morph target
-            morphTarget.animations.push(zeroAnimation);
+                        // Add the animation to the animation group
+                        animationGroup.addTargetedAnimation(zeroAnimation, morphTarget);
 
-            // Add the animation to the animation group
-            animationGroup.addTargetedAnimation(zeroAnimation, morphTarget);
+             */
         }
 
 
@@ -317,7 +319,7 @@ function AutoBlinkAnimate(animationGroup, audio_duration, _HeadMesh) {
 
 }
 
-function lipSync_(phonemes, audio_duration, _HeadMesh, title, start_frame) {
+function lipSync_(phonemes, audio_duration, _HeadMesh, title, start_frame, order) {
 
     var Expressiveness_range = document.getElementById("Expressiveness_range");
     if (_HeadMesh) {
@@ -369,18 +371,19 @@ function lipSync_(phonemes, audio_duration, _HeadMesh, title, start_frame) {
             // Create a new FaceAnimationGroup
             var FaceAnimationGroup = new BABYLON.AnimationGroup(_HeadMesh.name + "_talk_" + title);
 
-
+            FaceAnimationGroup.playOrder = order;
             // var FaceAnimationGroup = new BABYLON.AnimationGroup(_HeadMesh.name + "_talk_" + title);
             combineKeyFrames(FaceAnimationGroup, morphVisemeKeys, audio_duration, _HeadMesh);
-            AutoBlinkAnimate(FaceAnimationGroup, audio_duration, _HeadMesh);
-            AllZeroKeyframes(FaceAnimationGroup, audio_duration, _HeadMesh);
+            //    AutoBlinkAnimate(FaceAnimationGroup, audio_duration, _HeadMesh);
+            //   AllZeroKeyframes(FaceAnimationGroup, audio_duration, _HeadMesh);
 
-            FaceAnimationGroup.normalize(0, FaceAnimationGroup.to);
+            //  FaceAnimationGroup.normalize(0, FaceAnimationGroup.to);
+
             FaceAnimationGroup.offset = start_frame;
             FaceAnimationGroup.blendingSpeed = 0.1;
             FaceAnimationGroup.enableBlending = true;
             FaceAnimationGroup.weight = 1.0;
-            console.log(FaceAnimationGroup);
+
             updateObjectNamesFromScene();
 
 
