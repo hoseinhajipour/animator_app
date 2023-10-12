@@ -387,6 +387,8 @@ function lipSync_(phonemes, audio_duration, _HeadMesh, title, start_frame, order
             updateObjectNamesFromScene();
 
 
+            BakeApplyAutoblink();
+
         } else {
             console.error("Morph target manager not found on the mesh.");
         }

@@ -29,7 +29,7 @@ var lips = [
     {name: "C", url: "images/Lips_icon/ch_j.jpg", target: "viseme_CH"},
     {name: "D", url: "images/Lips_icon/t_l_d.jpg", target: "viseme_DD"},
     {name: "E", url: "images/Lips_icon/ee.jpg", target: "viseme_E"},
-    {name: "F", url: "images/Lips_icon/f_v.jpg", target: "viseme_FF"},
+    {name: "F", url: "images/Lips_icon/f_v.jpg", target: "viseme_SS"},
     {name: "G", url: "images/Lips_icon/k_g.jpg", target: "viseme_I"},
     {name: "H", url: "images/Lips_icon/th.jpg", target: "viseme_TH"},
 ];
@@ -224,7 +224,7 @@ engine.runRenderLoop(function () {
 window.addEventListener("resize", function () {
     engine.resize();
 });
-scene.debugLayer.show();
+//scene.debugLayer.show();
 //scene.debugLayer.show({ embedMode: true });
 document.addEventListener("keydown", function (event) {
     // Check the key code and toggle gizmos accordingly
