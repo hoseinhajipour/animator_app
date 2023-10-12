@@ -27,13 +27,6 @@ const createWindow = () => {
         },
     });
 
-
-
-
-
-
-
-
     const template = [
         {
             label: 'File',
@@ -140,12 +133,6 @@ const createWindow = () => {
 
     // and load the index.html of the app.
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
-
-
-
-
-
-
 
     var splash = new BrowserWindow({
         width: 960,

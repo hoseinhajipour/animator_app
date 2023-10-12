@@ -45,24 +45,37 @@
         </div>
     </div>
 
+    <hr/>
+    <div class="text-center">
+        <label>Select Audio Wave File</label>
+        <button class="btn btn-primary mat-icon material-icons "
+                onclick="OpenWAveFile()">music_note
+        </button>
+        <input id="lipsync_audio_file" type="file" accept=".wav" class="d-none">
+        <audio id="lipsync_audio" controls class="d-none"></audio>
+        <button class="btn btn-primary form-control my-3" disabled id="runButton">
+            Auto LipSync <i class="fa fa-ravelry" aria-hidden="true"></i>
+            <div id="lipsync_loading" class="spinner-border spinner-border-sm text-light" style="display: none"
+                 role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </button>
 
-    <input id="lipsync_audio_file" type="file">
-    <audio id="lipsync_audio" controls></audio>
-    <button class="btn btn-primary form-control my-3" id="runButton">
-        Auto LipSync
-        <div id="lipsync_loading" class="spinner-border spinner-border-sm text-light" style="display: none"
-             role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </button>
+        <button class="btn btn-warning d-none" onclick="BakeKeyframe()">Bake Keyframe</button>
+        <button class="btn btn-warning" onclick="BakeApplyAutoblink()">Apply Auto blink
+            <i class="fa fa-eye" aria-hidden="true"></i>
+        </button>
 
-    <button class="btn btn-warning" onclick="BakeKeyframe()">Bake Keyframe</button>
-    <button class="btn btn-warning" onclick="BakeApplyAutoblink()">Apply Auto blink</button>
+    </div>
 
 
     <script src="./js/AutoLipSyncer.js"></script>
 
     <script>
+        function OpenWAveFile() {
+            $("#lipsync_audio_file").click();
+        }
+
         function MergeAllAnim() {
 
             var mergedAnimationGroup = BABYLON.AnimationGroup.MergeAnimationGroups(scene.animationGroups, true, true);

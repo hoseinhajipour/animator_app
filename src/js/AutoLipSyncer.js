@@ -13,6 +13,7 @@ fileInput.addEventListener('change', function () {
         inputAudio = file.path;
         const fileURL = URL.createObjectURL(file);
         MasterAudio.src = fileURL;
+        $("#runButton").prop("disabled", false);
     }
 });
 
