@@ -15,14 +15,7 @@ function generateModel() {
 
         {
             title: 'Expression',
-            keyframes: [
-                {
-                    val: 0,
-                    shape: 'rhomb',
-                    type: 'Expression',
-                    value: "happy"
-                },
-            ],
+            keyframes: [],
         },
         {
             title: 'HeadLookAt',

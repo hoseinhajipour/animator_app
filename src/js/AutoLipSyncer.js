@@ -277,7 +277,9 @@ function AutoBlinkAnimate(animationGroup, audio_duration, _HeadMesh) {
             });
             morphTargetKeys.push({
                 frame: blinkWait + (i * blinkWait) + (blinkDuration / 2),
-                value: 1.0
+                value: 1.0,
+                inTangent : 0,
+                outTangent : 0,
             });
             morphTargetKeys.push({
                 frame: blinkWait + (i * blinkWait) + blinkDuration,

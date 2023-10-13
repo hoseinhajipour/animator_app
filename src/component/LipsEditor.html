@@ -61,7 +61,7 @@
             </div>
         </button>
 
-        <button class="btn btn-warning d-none" onclick="BakeKeyframe()">Bake Keyframe</button>
+        <button class="btn btn-warning " onclick="BakeKeyframe()">Bake Keyframe</button>
         <button class="btn btn-warning form-control" onclick="BakeApplyAutoblink()">Apply Auto blink
             <i class="fa fa-eye" aria-hidden="true"></i>
         </button>
@@ -162,11 +162,8 @@
             if (FaceAnimationGroup == null) {
                 FaceAnimationGroup = new BABYLON.AnimationGroup(HeadMesh.name + "_talk_" + title);
             }
-
-            //  FaceAnimationGroup.weight = 1;
             var Expressiveness_range = parseInt(document.getElementById("Expressiveness_range").value) / 100;
 
-            var morphVisemeKeys = [];
 
             var viseme = findMorph(HeadMesh.morphTargetManager, viseme_name);
 
@@ -217,7 +214,12 @@
                     return a.frame - b.frame;
                 });
 
-                console.log(currentkeys);
+                // Set linear tangent mode for all keyframes
+                currentkeys.forEach(function (key) {
+                    key.inTangent = 0;
+                    key.outTangent = 0;
+                });
+
 
                 morphTargetAnimation.setKeys(currentkeys);
                 FaceAnimationGroup.normalize(0, currentkeys[currentkeys.length - 1].frame);

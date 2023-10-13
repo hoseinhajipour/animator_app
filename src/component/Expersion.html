@@ -1,8 +1,28 @@
 <div>
     <button class="btn btn-light form-control my-3" onclick="GenerateMorphList()">Generate List</button>
+    <button class="btn btn-light form-control my-1" onclick="ResetAllBlendShapes()">Reset All BlendShapes</button>
     <div id="morphTargetsList" class="row"></div>
 
     <script>
+        function ResetAllBlendShapes() {
+            if (HeadMesh.morphTargetManager) {
+                const targets = HeadMesh.morphTargetManager._targets;
+
+                // Iterate through all targets, set influence to 0, and update input range values
+                for (let index = 0; index < targets.length; index++) {
+                    const target = targets[index];
+                    target.influence = 0;
+
+                    // Update input range values to 0
+                    const inputRange = document.querySelector(`input[type="range"][data-target="${target.name}"]`);
+                    if (inputRange) {
+                        inputRange.value = 0;
+                    }
+                }
+            }
+        }
+
+
         function captureMeshImageWithInfluence(parent, target) {
             return new Promise((resolve, reject) => {
                 target.influence = 1.0;
@@ -15,7 +35,7 @@
                         parent.appendChild(img);
                         target.influence = 0;
                         resolve(); // Resolve the promise after capturing the image and setting influence back to 0
-                    },20); // 100 milliseconds
+                    }, 20); // 100 milliseconds
                 });
             });
         }
@@ -46,12 +66,18 @@
                     const inputRange = document.createElement("input");
                     inputRange.type = "range";
                     inputRange.min = "0";
-                    inputRange.max = "1";
+                    inputRange.max = "1.0";
                     inputRange.step = "0.01";
+                    inputRange.setAttribute("data-target", target.name);
+
                     inputRange.value = target.influence.toFixed(2);
 
                     inputRange.addEventListener("input", function () {
                         target.influence = parseFloat(this.value);
+                    });
+
+                    inputRange.addEventListener("change", function () {
+                        addExpressionKeyframeTimelineView(target.name, inputRange.value);
                     });
 
                     listItem.appendChild(inputRange);
@@ -63,6 +89,154 @@
         async function GenerateMorphList() {
             await UpdateMorphList();
         }
+
+        function addExpressionKeyframeTimelineView(name, value) {
+            if (timeline) {
+                const currentModel = timeline.getModel();
+                // Find the 'Expression' row in the current model
+                var expressionRow = currentModel.rows.find(row => row.title === 'Expression');
+                if (expressionRow) {
+                    const existingKeyframeIndex = expressionRow.keyframes.findIndex(keyframe => keyframe.val === timeline.getTime());
+
+                    // If a keyframe with the same 'val' property exists, update or remove it
+                    if (existingKeyframeIndex !== -1) {
+                        const existingBlendShapeIndex = expressionRow.keyframes[existingKeyframeIndex].blend_shapes.findIndex(shape => shape.name === name);
+
+                        if (existingBlendShapeIndex !== -1) {
+                            // If a blend shape with the same name exists, update its value
+                            expressionRow.keyframes[existingKeyframeIndex].blend_shapes[existingBlendShapeIndex].value = value;
+                        } else {
+                            // If a blend shape with the same name does not exist, add it
+                            expressionRow.keyframes[existingKeyframeIndex].blend_shapes.push({
+                                name: name,
+                                value: value,
+                            });
+                        }
+                    } else {
+                        // If a keyframe with the same 'val' property does not exist, add a new keyframe
+                        expressionRow.keyframes.push({
+                            val: timeline.getTime(),
+                            shape: 'rhomb',
+                            type: 'Expression',
+                            blend_shapes: [
+                                {
+                                    name: name,
+                                    value: value,
+                                }
+                            ]
+                        });
+                    }
+                } else {
+                    // If 'Expression' row doesn't exist, create a new one and add the keyframe
+                    currentModel.rows.push({
+                        title: 'Expression',
+                        keyframes: [
+                            {
+                                val: timeline.getTime(),
+                                shape: 'rhomb',
+                                type: 'Expression',
+                                blend_shapes: [
+                                    {
+                                        name: name,
+                                        value: value,
+                                    }
+                                ]
+                            }
+                        ]
+                    });
+                }
+
+                timeline.setModel(currentModel);
+                generateHTMLOutlineListNodes(currentModel.rows);
+
+
+                expressionRow.keyframes.forEach(keyframe => {
+                    if (keyframe.val === timeline.getTime()) {
+                        keyframe.blend_shapes.forEach(blend_shape => {
+                            addExpressionKeyframe(blend_shape);
+                        });
+                    }
+                });
+
+            }
+        }
+
+
+        function addExpressionKeyframe(blend_shape) {
+            var title = "Expression";
+            var FaceAnimationGroup = scene.getAnimationGroupByName(HeadMesh.name + "_talk_" + title);
+
+            if (FaceAnimationGroup == null) {
+                FaceAnimationGroup = new BABYLON.AnimationGroup(HeadMesh.name + "_talk_" + title);
+                FaceAnimationGroup.playOrder = 3;
+                FaceAnimationGroup.enableBlending = true;
+            }
+
+            var Expression = findMorph(HeadMesh.morphTargetManager, blend_shape.name);
+
+            if (Expression) {
+                var newMorphTargetKeys = [];
+                var start = millisecondsToFrames(timeline.getTime());
+                newMorphTargetKeys.push({
+                    frame: start,
+                    value: blend_shape.value,
+                });
+            }
+            var morphTargetAnimation = Expression.animations.find(function (animation) {
+                return animation.name === blend_shape.name;
+            });
+            if (morphTargetAnimation) {
+
+                var currentkeys = morphTargetAnimation._keys;
+
+                for (var i = 0; i < newMorphTargetKeys.length; i++) {
+                    var index = currentkeys.findIndex(function (key) {
+                        return key.frame === newMorphTargetKeys[i].frame;
+                    });
+                    if (index !== -1) {
+                        // If duplicate frame is found, replace the value in currentkeys
+                        currentkeys[index].value = newMorphTargetKeys[i].value;
+                    } else {
+                        // If frame is not duplicate, add it to currentkeys
+                        currentkeys.push({
+                            frame: newMorphTargetKeys[i].frame,
+                            value: newMorphTargetKeys[i].value
+                        });
+                    }
+                }
+
+                // Sort currentkeys based on frame values
+                currentkeys.sort(function (a, b) {
+                    return a.frame - b.frame;
+                });
+
+                // Set linear tangent mode for all keyframes
+                currentkeys.forEach(function (key) {
+                    key.inTangent = 0;
+                    key.outTangent = 0;
+                });
+
+                morphTargetAnimation.setKeys(currentkeys);
+                FaceAnimationGroup.normalize(0, currentkeys[currentkeys.length - 1].frame);
+            } else {
+                morphTargetAnimation = new BABYLON.Animation(
+                    blend_shape.name,
+                    "influence",
+                    frameRate,
+                    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+                    BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
+                );
+                morphTargetAnimation.setKeys(newMorphTargetKeys);
+                Expression.animations.push(morphTargetAnimation);
+                FaceAnimationGroup.addTargetedAnimation(morphTargetAnimation, Expression);
+            }
+
+            console.log(Expression);
+
+            updateObjectNamesFromScene();
+        }
+
+
     </script>
 
 
