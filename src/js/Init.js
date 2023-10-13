@@ -18,9 +18,10 @@ var BodyMesh;
 var EyeLeftMesh;
 var EyeRightMesh;
 
-
 var eyeLookat = false;
 
+var Eye_Blink_Left_blendshape_name="eyeBlinkLeft";
+var Eye_Blink_Right_blendshape_name="eyeBlinkRight";
 
 var lips = [
     {name: "X", url: "images/Lips_icon/none.jpg", target: "viseme_sil"},
@@ -33,6 +34,8 @@ var lips = [
     {name: "G", url: "images/Lips_icon/k_g.jpg", target: "viseme_I"},
     {name: "H", url: "images/Lips_icon/th.jpg", target: "viseme_TH"},
 ];
+
+
 
 const createScene = function (laoadformurl = null) {
     const scene = new BABYLON.Scene(engine);
@@ -50,7 +53,7 @@ const createScene = function (laoadformurl = null) {
 
 
     const light_0 = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-    light_0.intensity =1;
+    light_0.intensity =3;
     const light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(0, -1, 1), scene);
     light.position = new BABYLON.Vector3(0, 15, -30);
     gizmoManager = new BABYLON.GizmoManager(scene);

@@ -53,6 +53,31 @@
                         </tbody>
                     </table>
 
+
+                    <table class="table table-bordered border-primary">
+                        <tbody>
+                        <tr>
+                            <th scope="row">
+                                <label>Eye Blink Left</label>
+                            </th>
+                            <td>
+                                <select id="Eye_Blink_Left_select" class="form-control">
+                                    <option>none</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label>Eye Blink Right</label>
+                            </th>
+                            <td>
+                                <select id="Eye_Blink_Right_select" class="form-control">
+                                    <option>none</option>
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -97,6 +122,31 @@
 
                     tableBody.appendChild(newRow);
                 });
+
+
+                var Eye_Blink_Left_select = document.getElementById("Eye_Blink_Left_select");
+
+                // Populate select element with morph target options
+                for (var i = 0; i < morphTargets.length; i++) {
+                    var option = document.createElement("option");
+                    option.value = morphTargets[i].name;
+                    option.text = morphTargets[i].name;
+                    Eye_Blink_Left_select.appendChild(option);
+                }
+
+                Eye_Blink_Left_select.value = Eye_Blink_Left_blendshape_name;
+
+
+                var Eye_Blink_Right_select = document.getElementById("Eye_Blink_Right_select");
+
+                // Populate select element with morph target options
+                for (var i = 0; i < morphTargets.length; i++) {
+                    var option = document.createElement("option");
+                    option.value = morphTargets[i].name;
+                    option.text = morphTargets[i].name;
+                    Eye_Blink_Right_select.appendChild(option);
+                }
+                Eye_Blink_Right_select.value = Eye_Blink_Right_blendshape_name;
             }
 
 
@@ -122,6 +172,11 @@
             // Update the original lips variable
             lips = updatedLips;
 
+            var Eye_Blink_Left_select = document.getElementById("Eye_Blink_Left_select");
+            Eye_Blink_Left_blendshape_name = Eye_Blink_Left_select.value;
+
+            var Eye_Blink_Right_select = document.getElementById("Eye_Blink_Right_select");
+            Eye_Blink_Right_blendshape_name = Eye_Blink_Right_select.value;
             // Close the modal
             jQuery('#BlendShapeLinkModal').modal('hide');
         }

@@ -1,16 +1,33 @@
 <b>Head Lookat Mouse</b>
 <br/>
-<button id="starteyeButton" class="btn btn-primary" onclick="starteyeButton()">Start</button>
-<button id="stopeyeButton" class="btn btn-primary" onclick="stopeyeButton()">Stop</button>
+
+<button id="toggleEyeButton" class="btn btn-primary form-control" onclick="toggleEyeMovement()">Start</button>
+
 
 <script>
-
     var eyeLeftBone = null;
     var eyeRightBone = null;
     var headBone = null;
 
+
+    function toggleEyeMovement() {
+        eyeLookat = !eyeLookat;
+        if (eyeLookat) {
+            starteyeButton();
+
+        } else {
+            stopeyeButton();
+
+        }
+    }
+
     function starteyeButton() {
         eyeLookat = true;
+
+        var buttonElement = document.getElementById("toggleEyeButton");
+        buttonElement.innerText = "Stop";
+        buttonElement.classList.remove("btn-primary");
+        buttonElement.classList.add("btn-danger");
 
         if (headBone == null) {
             var skeleton = scene.skeletons[0];
@@ -34,7 +51,8 @@
     canvas.addEventListener("mousemove", function (event) {
 
         if (eyeLookat) {
-            var mouseX = ((event.clientX / window.innerWidth) * 2 - 1 ) *-2;  // Adjust the calculation for X-axis
+
+            var mouseX = ((event.clientX / window.innerWidth) * 2 - 1) * -2;  // Adjust the calculation for X-axis
             var mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
             var mousePos = new BABYLON.Vector3(mouseX, mouseY * 4, 3);
 
@@ -53,5 +71,29 @@
 
     function stopeyeButton() {
         eyeLookat = false;
+        var buttonElement = document.getElementById("toggleEyeButton");
+        buttonElement.innerText = "Start";
+        buttonElement.classList.remove("btn-danger");
+        buttonElement.classList.add("btn-primary");
+        var mouseX = 0.1476510067114094;
+        var mouseY = 0.3420260782347041;
+
+        var mousePos = new BABYLON.Vector3(mouseX, mouseY * 4, 3);
+
+        var lookAtCtl = new BABYLON.BoneLookController(HeadMesh, headBone, mousePos, {
+            adjustYaw: 0,
+            adjustPitch: 0,
+            adjustRoll: 15.70
+        });
+
+        scene.registerBeforeRender(function () {
+            lookAtCtl.update();
+        });
     }
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            stopeyeButton();
+        }
+    });
 </script>

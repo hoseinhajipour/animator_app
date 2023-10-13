@@ -1,0 +1,40 @@
+<div class="modal fade " id="PreferenceModal" tabindex="-1" aria-labelledby="PreferenceModalLabel" aria-hidden="true">
+    <div class="modal-dialog  ">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="PreferenceModalLabel">Preference</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6">
+                        <label>LipSync Engine</label>
+                    </div>
+                    <div class="col-6">
+                        <select class="form-control ">
+                            <option value="rhubarb">rhubarb</option>
+                            <option value="Allosaurus">Allosaurus</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label>Frame Rate </label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" class="form-control" value="60">
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function OpenPreference() {
+        jQuery('#PreferenceModal').modal('show');
+        console.log("OpenPreference()");
+    }
+</script>

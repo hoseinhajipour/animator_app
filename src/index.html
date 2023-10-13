@@ -96,6 +96,8 @@
 <div data-include="audiowave"></div>
 <div data-include="timeline" class="resizable-panel-timeline"></div>
 
+<div data-include="Preference" ></div>
+
 
 <script src="./js/Init.js"></script>
 <script src="./js/util.js"></script>
@@ -107,8 +109,7 @@
         $.each(includes, function () {
             var file = "component/" + $(this).data('include') + '.html'
             $(this).load(file)
-        })
-
+        });
 
         $(".resizable-panel").resizable({
             handles: "e",  // "e" for east (right) handle

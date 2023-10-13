@@ -89,7 +89,16 @@ const createWindow = () => {
                     label: 'Paste',
                     accelerator: 'CmdOrCtrl+V',
                     role: 'paste'
-                }
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    label: 'Preference',
+                    click: () => {
+                        mainWindow.webContents.executeJavaScript("OpenPreference();");
+                    }
+                },
             ]
         },
         {
