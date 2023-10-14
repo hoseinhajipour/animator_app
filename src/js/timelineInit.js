@@ -76,6 +76,10 @@ timeline.onTimeChanged(function (event) {
             }
             group.goToFrame(frame);
         });
+        if (MasterAudio.src) {
+            MasterAudio.currentTime = timeline.getTime() / 1000;
+        }
+
         showActivePositionInformation();
     } else {
         /*
@@ -281,6 +285,58 @@ function removeKeyframe() {
             }
 
 
+            if (SeletedFrame.type === "Expression") {
+                var title = "Expression";
+                var FaceAnimationGroup = scene.getAnimationGroupByName(HeadMesh.name + "_talk_" + title);
+                console.log(FaceAnimationGroup);
+
+                SeletedFrame.blend_shapes.forEach(blend_shape => {
+                    var Expression = findMorph(HeadMesh.morphTargetManager, blend_shape.name);
+                    var morphTargetAnimationIndex = Expression.animations.findIndex(function (animation) {
+                        return animation.name === blend_shape.name;
+                    });
+
+                    if (morphTargetAnimationIndex !== -1) {
+                        var morphTargetAnimation = Expression.animations[morphTargetAnimationIndex];
+
+                        const keyframeIndicesToRemove = [];
+
+                        // Find the indices of the keyframes to remove
+                        for (let i = 0; i < morphTargetAnimation.getKeys().length; i++) {
+                            if (morphTargetAnimation.getKeys()[i].frame === frameToRemove) {
+                                keyframeIndicesToRemove.push(i);
+                            }
+                        }
+
+                        // Remove the keyframes from morphTargetAnimation
+                        for (let i = keyframeIndicesToRemove.length - 1; i >= 0; i--) {
+                            morphTargetAnimation.getKeys().splice(keyframeIndicesToRemove[i], 1);
+                        }
+
+                        // If there are no more keyframes, remove the animation from FaceAnimationGroup
+                        if (morphTargetAnimation.getKeys().length === 0) {
+                            // Find the index of the animation in FaceAnimationGroup
+                            const animationIndexToRemove = FaceAnimationGroup.targetedAnimations.findIndex(function (targetedAnimation) {
+                                return targetedAnimation.animation === morphTargetAnimation;
+                            });
+
+                            // Remove the animation from FaceAnimationGroup
+                            if (animationIndexToRemove !== -1) {
+                                FaceAnimationGroup.targetedAnimations.splice(animationIndexToRemove, 1);
+                            }
+
+                            // Stop the animation if it's playing
+                            if (FaceAnimationGroup.isPlaying) {
+                                FaceAnimationGroup.stop();
+                            }
+                        }
+                    }
+                });
+            }
+
+
+
+
         })
 
 
@@ -298,17 +354,6 @@ function removeKeyframe() {
     }
 }
 
-function addKeyframe() {
-    if (timeline) {
-        // Add keyframe
-        const currentModel = timeline.getModel();
-        currentModel.rows.push({keyframes: [{val: timeline.getTime()}]});
-        timeline.setModel(currentModel);
-
-        // Generate outline list menu
-        generateHTMLOutlineListNodes(currentModel.rows);
-    }
-}
 
 function panMode(interactive) {
     if (timeline) {

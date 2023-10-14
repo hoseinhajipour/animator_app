@@ -227,7 +227,7 @@ engine.runRenderLoop(function () {
 window.addEventListener("resize", function () {
     engine.resize();
 });
-scene.debugLayer.show();
+//scene.debugLayer.show();
 //scene.debugLayer.show({ embedMode: true });
 document.addEventListener("keydown", function (event) {
     // Check the key code and toggle gizmos accordingly
