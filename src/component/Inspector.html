@@ -1,0 +1,47 @@
+<button class="btn btn-warning form-control my-1" onclick="BakeKeyframe()">Bake Keyframe</button>
+<button class="btn btn-warning form-control" onclick="BakeApplyAutoblink()">Apply Auto blink
+    <i class="fa fa-eye" aria-hidden="true"></i>
+</button>
+<script>
+    function BakeKeyframe() {
+
+        var maxframe = 0;
+        scene.animationGroups.forEach(function (animationGroup) {
+            if (maxframe < animationGroup.to) {
+                maxframe = animationGroup.to;
+            }
+        });
+        var Endsecond = maxframe / frameRate;
+        scene.animationGroups.forEach(function (animationGroup) {
+            animationGroup.normalize(0, maxframe);
+            AllZeroKeyframes(animationGroup, Endsecond, HeadMesh);
+        });
+
+    }
+    function BakeApplyAutoblink() {
+
+        if(HeadMesh){
+            var maxframe = 0;
+            scene.animationGroups.forEach(function (animationGroup) {
+                if (maxframe < animationGroup.to) {
+                    maxframe = animationGroup.to;
+                }
+            });
+            var Endsecond = maxframe / frameRate;
+
+            var title = "Eyes";
+            var EyesAnimationGroup = scene.getAnimationGroupByName(HeadMesh.name + "_talk_" + title);
+
+            if (EyesAnimationGroup == null) {
+                EyesAnimationGroup = new BABYLON.AnimationGroup(HeadMesh.name + "_talk_" + title);
+                EyesAnimationGroup.playOrder = 0;
+            }
+
+            AutoBlinkAnimate(EyesAnimationGroup, Endsecond, HeadMesh);
+
+            updateObjectNamesFromScene();
+        }
+
+    }
+
+</script>

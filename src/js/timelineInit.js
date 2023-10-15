@@ -335,8 +335,6 @@ function removeKeyframe() {
             }
 
 
-
-
         })
 
 
@@ -403,7 +401,7 @@ function onPauseClick(event) {
         animationGroups.forEach(group => {
             group.stop();
         });
-        if (MasterAudio) {
+        if (MasterAudio.src) {
             MasterAudio.pause();
         }
 
@@ -444,3 +442,19 @@ function initPlayer() {
 initPlayer();
 showActivePositionInformation();
 window.onresize = showActivePositionInformation;
+
+
+function togglePlayPause() {
+
+    if (playing) {
+        onPauseClick();
+    } else {
+        onPlayClick();
+    }
+}
+
+document.body.addEventListener('keydown', function (event) {
+    if (event.code === 'Space') {
+        togglePlayPause();
+    }
+});

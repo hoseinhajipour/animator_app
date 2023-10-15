@@ -2,22 +2,85 @@
 <br/>
 
 <button id="toggleEyeButton" class="btn btn-primary form-control" onclick="toggleEyeMovement()">Start</button>
-
+<button class="btn btn-danger form-control my-3" onclick="sampleHeadAnim()">sampleHeadAnim</button>
 
 <script>
     var eyeLeftBone = null;
     var eyeRightBone = null;
     var headBone = null;
+    var HeadLookAtAnimationGroup;
+    var currentHeadboneKeys = [];
+    var headtransformNode;
+    var lookAtCtl;
+    // Function to Generate Random Rotation Values
+    function getRandomRotation() {
+        return new BABYLON.Vector3(
+            Math.random() * 10,  // X-axis rotation (in degrees)
+            Math.random() * 10,  // Y-axis rotation (in degrees)
+            Math.random() * 10   // Z-axis rotation (in degrees)
+        );
+    }
+
+    // Function to Create Random Animation
+    function createRandomAnimation(transformNode, duration) {
+        const randomRotation = getRandomRotation();
+        const animation = new BABYLON.Animation("randomAnimation", "rotation", 30, BABYLON.Animation.ANIMATIONTYPE_VECTOR3);
+
+        console.log(transformNode.rotation);
+        const keys = [
+            {frame: 0, value: transformNode.rotation},
+            {frame: duration/4, value:  getRandomRotation()},
+            {frame: duration/3, value:  getRandomRotation()},
+            {frame: duration/2, value:  getRandomRotation()},
+            {frame: duration, value:  getRandomRotation()}
+        ];
+        animation.setKeys(keys);
+        return animation;
+    }
+
+    // Function to Set Up Animation Group
+    function setupAnimationGroup(transformNode) {
+        const animationGroup = new BABYLON.AnimationGroup("randomAnimationGroup");
+
+        const randomAnimationDuration = 120; // Set the duration of the random animation (in frames)
+        const randomAnimation = createRandomAnimation(transformNode, randomAnimationDuration);
+        animationGroup.addTargetedAnimation(randomAnimation, transformNode);
+
+        console.log(transformNode);
+        // Start the animation group
+        animationGroup.play(true); // The true parameter means the animation will loop
+    }
+
+
+    function sampleHeadAnim() {
+        var skeleton = scene.skeletons[0];
+        var headBone;
+
+        skeleton.bones.forEach(bone => {
+            if (bone.name === "Head") {
+                headBone = bone;
+            }
+        });
+
+        let transformNode = headBone.getTransformNode();
+        /*
+                const yprQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(45, 0, 0);
+                transformNode.rotationQuaternion.set(yprQuaternion.x, yprQuaternion.y, yprQuaternion.z, yprQuaternion.w);
+        */
+        setupAnimationGroup(transformNode);
+    }
 
 
     function toggleEyeMovement() {
-        eyeLookat = !eyeLookat;
-        if (eyeLookat) {
-            starteyeButton();
+        if (HeadMesh) {
+            eyeLookat = !eyeLookat;
+            if (eyeLookat) {
+                starteyeButton();
 
-        } else {
-            stopeyeButton();
+            } else {
+                stopeyeButton();
 
+            }
         }
     }
 
@@ -25,6 +88,7 @@
         eyeLookat = true;
 
         var buttonElement = document.getElementById("toggleEyeButton");
+        buttonElement.blur();
         buttonElement.innerText = "Stop";
         buttonElement.classList.remove("btn-primary");
         buttonElement.classList.add("btn-danger");
@@ -45,18 +109,31 @@
                         break;
                 }
             });
+
+            headtransformNode = headBone.getTransformNode();
+            var title = "HeadLookAt";
+            HeadLookAtAnimationGroup = scene.getAnimationGroupByName(HeadMesh.name + "_talk_" + title);
+
+            if (HeadLookAtAnimationGroup == null) {
+                HeadLookAtAnimationGroup = new BABYLON.AnimationGroup(HeadMesh.name + "_talk_" + title);
+                HeadLookAtAnimationGroup.playOrder = 4;
+                HeadLookAtAnimationGroup.enableBlending = true;
+            }
+            currentHeadboneKeys = [];
+
+            updateObjectNamesFromScene();
         }
     }
 
     canvas.addEventListener("mousemove", function (event) {
 
         if (eyeLookat) {
-
             var mouseX = ((event.clientX / window.innerWidth) * 2 - 1) * -2;  // Adjust the calculation for X-axis
             var mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
             var mousePos = new BABYLON.Vector3(mouseX, mouseY * 4, 3);
 
-            var lookAtCtl = new BABYLON.BoneLookController(HeadMesh, headBone, mousePos, {
+
+            lookAtCtl = new BABYLON.BoneLookController(HeadMesh, headBone, mousePos, {
                 adjustYaw: 0,
                 adjustPitch: 0,
                 adjustRoll: 15.70
@@ -65,9 +142,17 @@
             scene.registerBeforeRender(function () {
                 lookAtCtl.update();
             });
+
+            if (playing) {
+                //record animation
+                //each frame set keyframe for headBone
+                var frame = millisecondsToFrames(timeline.getTime());
+                currentHeadboneKeys.push({frame: frame, value: headtransformNode.rotationQuaternion});
+
+
+            }
         }
     });
-
 
     function stopeyeButton() {
         eyeLookat = false;
@@ -89,6 +174,78 @@
         scene.registerBeforeRender(function () {
             lookAtCtl.update();
         });
+
+        // Remove the lookAtCtl from the update loop
+        scene.unregisterBeforeRender(updateLookAtCtl);
+
+        // Set lookAtCtl to null to remove the reference
+        lookAtCtl = null;
+
+
+        GenerateHeadboneKeyframe();
+    }
+
+    function GenerateHeadboneKeyframe() {
+        if (currentHeadboneKeys.length > 0) {
+            currentHeadboneKeys = removeDuplicateFrames(currentHeadboneKeys);
+            console.log(currentHeadboneKeys);
+            var headlookat_Animation = new BABYLON.Animation(
+                "headlookat_animation",
+                "rotation",
+                frameRate,
+                BABYLON.Animation.ANIMATIONTYPE_VECTOR3
+            );
+
+            // Interpolate keyframes for smoother animation
+            var easingFunction = new BABYLON.QuadraticEase();
+            easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+            headlookat_Animation.setEasingFunction(easingFunction);
+
+            // Create animation keys for the head bone rotationQuaternion
+
+            var keys = [];
+            for (var i = 0; i < currentHeadboneKeys.length; i++) {
+                var frame = currentHeadboneKeys[i].frame;
+
+                // Convert Quaternion to Euler angles (in radians)
+                var euler = currentHeadboneKeys[i].value.toEulerAngles();
+
+// Convert Euler angles to Vector3 (in degrees)
+                var rotationInDegrees = new BABYLON.Vector3(
+                    BABYLON.Tools.ToDegrees(euler.x),
+                    BABYLON.Tools.ToDegrees(euler.y),
+                    BABYLON.Tools.ToDegrees(euler.z)
+                );
+
+                keys.push({
+                    frame: frame,
+                    value: getRandomRotation()
+                });
+            }
+            headlookat_Animation.setKeys(keys);
+
+            headtransformNode.animations.push(headlookat_Animation);
+            // Apply animation to the head bone
+            HeadLookAtAnimationGroup.addTargetedAnimation(headlookat_Animation, headtransformNode);
+            HeadLookAtAnimationGroup.normalize(0, currentHeadboneKeys[currentHeadboneKeys.length - 1].frame);
+            console.log(keys);
+        }
+    }
+
+
+    function removeDuplicateFrames(keys) {
+        var uniqueFrames = [];
+        var seenFrames = {};
+
+        for (var i = 0; i < keys.length; i++) {
+            var frame = keys[i].frame;
+            if (!seenFrames[frame]) {
+                uniqueFrames.push(keys[i]);
+                seenFrames[frame] = true;
+            }
+        }
+
+        return uniqueFrames;
     }
 
     document.addEventListener("keydown", function (event) {

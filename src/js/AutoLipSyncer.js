@@ -19,8 +19,10 @@ fileInput.addEventListener('change', function () {
 
 
 document.getElementById('runButton').addEventListener('click', () => {
-    $("#lipsync_loading").show();
-    ipcRenderer.send('run-command', inputAudio);
+    if(HeadMesh) {
+        $("#lipsync_loading").show();
+        ipcRenderer.send('run-command', inputAudio);
+    }
 });
 ipcRenderer.on('command-done', (event, code, result) => {
     var lipsyncData = JSON.parse(result);
