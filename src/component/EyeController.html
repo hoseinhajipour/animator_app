@@ -32,7 +32,8 @@
             {frame: duration/4, value:  getRandomRotation()},
             {frame: duration/3, value:  getRandomRotation()},
             {frame: duration/2, value:  getRandomRotation()},
-            {frame: duration, value:  getRandomRotation()}
+            {frame: duration, value:  getRandomRotation()},
+            {frame: duration+10, value: transformNode.rotation}
         ];
         animation.setKeys(keys);
         return animation;
