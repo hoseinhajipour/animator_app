@@ -19,17 +19,14 @@ function generateModel() {
         },
         {
             title: 'HeadLookAt',
-            keyframes: [
-
-                {
-                    val: 0,
-                    shape: 'rhomb',
-                    type: 'HeadLookAt',
-                    // value: new BABYLON.Vector3(0, 0, 0)
-                }
-
-
-            ],
+            style: {
+                height: 60,
+                keyframesStyle: {
+                    shape: 'rect',
+                    width: 4,
+                    height: 60,
+                },
+            },
         },
         {
             title: 'BodyAnimation',
