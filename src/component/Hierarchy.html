@@ -1,20 +1,7 @@
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="Hierarchy-tab" data-bs-toggle="tab" data-bs-target="#Hierarchy"
-                type="button" role="tab" aria-controls="Hierarchy" aria-selected="true">Hierarchy
-        </button>
-    </li>
-</ul>
-<div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="Hierarchy" role="tabpanel" aria-labelledby="Hierarchy-tab">
-        <ul id="objectList"></ul>
-        <ul id="lightList"></ul>
-        <ul id="CameraList"></ul>
-        <ul id="AnimationList"></ul>
-
-    </div>
-</div>
-
+<ul id="objectList"></ul>
+<ul id="lightList"></ul>
+<ul id="CameraList"></ul>
+<ul id="AnimationList"></ul>
 <script>
     // This function will populate the ul elements with the object names and light names.
     function updateObjectNamesFromScene() {

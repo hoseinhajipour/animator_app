@@ -45,7 +45,32 @@
 
 <div class="row">
     <div class="col-2 resizable-panel">
-        <div data-include="Hierarchy"></div>
+
+        <ul class="nav nav-tabs" id="leftTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="Hierarchy-tab" data-bs-toggle="tab" data-bs-target="#Hierarchy"
+                        type="button" role="tab" aria-controls="Hierarchy" aria-selected="true">Hierarchy
+                </button>
+
+            </li>
+
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="posemorph-tab" data-bs-toggle="tab" data-bs-target="#posemorph"
+                        type="button" role="tab" aria-controls="Hierarchy" aria-selected="true">posemorph
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="leftTabContent">
+            <div class="tab-pane fade show active" id="Hierarchy" role="tabpanel" aria-labelledby="Hierarchy-tab">
+                <div data-include="Hierarchy"></div>
+            </div>
+
+            <div class="tab-pane fade" id="posemorph" role="tabpanel" aria-labelledby="posemorph-tab">
+                posemorph
+            </div>
+        </div>
+
+
 
     </div>
     <div class="col-7 resizable-panel">
@@ -84,7 +109,7 @@
                 <div data-include="BlendshapeConnectPhoneme"></div>
                 <div data-include="Expersion"></div>
             </div>
-            <div class="tab-pane fade " id="Tools" role="tabpanel" aria-labelledby="Hierarchy-tab">
+            <div class="tab-pane fade " id="Tools" role="tabpanel" aria-labelledby="Tools-tab">
                 <div data-include="Inspector"></div>
                 <div data-include="EyeController"></div>
             </div>
