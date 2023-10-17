@@ -299,19 +299,19 @@ function removeKeyframe() {
                         const keyframeIndicesToRemove = [];
 
                         // Find the indices of the keyframes to remove
-                        for (let i = 0; i < morphTargetAnimation.getKeys().length; i++) {
-                            if (morphTargetAnimation.getKeys()[i].frame === frameToRemove) {
+                        for (let i = 0; i < morphTargetAnimation._keys.length; i++) {
+                            if (morphTargetAnimation._keys[i].frame === frameToRemove) {
                                 keyframeIndicesToRemove.push(i);
                             }
                         }
 
                         // Remove the keyframes from morphTargetAnimation
                         for (let i = keyframeIndicesToRemove.length - 1; i >= 0; i--) {
-                            morphTargetAnimation.getKeys().splice(keyframeIndicesToRemove[i], 1);
+                            morphTargetAnimation._keys.splice(keyframeIndicesToRemove[i], 1);
                         }
 
                         // If there are no more keyframes, remove the animation from FaceAnimationGroup
-                        if (morphTargetAnimation.getKeys().length === 0) {
+                        if (morphTargetAnimation._keys.length === 0) {
                             // Find the index of the animation in FaceAnimationGroup
                             const animationIndexToRemove = FaceAnimationGroup.targetedAnimations.findIndex(function (targetedAnimation) {
                                 return targetedAnimation.animation === morphTargetAnimation;
@@ -327,6 +327,8 @@ function removeKeyframe() {
                                 FaceAnimationGroup.stop();
                             }
                         }
+                        Expression.animations.splice(morphTargetAnimationIndex, 1);
+                        console.log(Expression.animations);
                     }
                 });
             }

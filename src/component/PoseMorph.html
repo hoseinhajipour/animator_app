@@ -1,0 +1,93 @@
+<div>
+    <button onclick="CaptureCurrentMorphs()" class="btn btn-light form-control">Capture Morphs</button>
+
+
+    <div id="PoseMorphList" class="row"></div>
+    <script>
+        var PoseMorphKeys = [];
+
+        var index_PoseMorphKeys = 0;
+
+        function CaptureCurrentMorphs() {
+            const morphTargetsList = document.getElementById("PoseMorphList");
+            BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, Maincamera, 128, function (base64Image) {
+                const listItem = document.createElement("div");
+                listItem.classList.add("col-6");
+                const button = document.createElement("button");
+
+                button.setAttribute("data-target", index_PoseMorphKeys);
+                button.addEventListener("click", function () {
+                    var targetIndex = parseInt(button.getAttribute("data-target"));
+                    var selectedMorph = PoseMorphKeys[targetIndex];
+
+                    // Extract necessary data from selectedMorph, assuming it has AnimationGroup and timeline information
+                    var timeline_keyframes = {...selectedMorph.timeline_keyframes};
+                    var animationGroupData = selectedMorph.AnimationGroup;
+
+                    // Apply the morph using the extracted data
+                    applyMorph(timeline_keyframes, animationGroupData);
+
+                    // Log PoseMorphKeys by data-target
+                });
+
+
+                var img = document.createElement("img");
+                img.src = base64Image;
+                img.style.width = "100%";
+                button.appendChild(img);
+                listItem.appendChild(button);
+
+                morphTargetsList.appendChild(listItem);
+
+                AppendCurrentExpersion();
+
+                ResetAllBlendShapes();
+
+            });
+        }
+
+        function AppendCurrentExpersion() {
+
+            const currentModel = timeline.getModel();
+            var expressionRow = currentModel.rows.find(row => row.title === 'Expression');
+
+            if (expressionRow) {
+                const existingKeyframeIndex = expressionRow.keyframes.findIndex(keyframe => keyframe.val === timeline.getTime());
+
+                var title = "Expression";
+                var FaceAnimationGroup = scene.getAnimationGroupByName(HeadMesh.name + "_talk_" + title);
+
+                var keyframes = {...expressionRow.keyframes[existingKeyframeIndex]};
+                var current = {
+                    "timeline_keyframes": keyframes,
+                    "AnimationGroup": FaceAnimationGroup._targetedAnimations
+                }
+                PoseMorphKeys.push(current);
+
+                index_PoseMorphKeys++;
+            }
+
+        }
+
+        function applyMorph(timeline_keyframes, animationGroupData) {
+            const currentModel = timeline.getModel();
+
+            var expressionRow = currentModel.rows.find(row => row.title === 'Expression');
+
+            // Creating a new keyframe object with the current time on the timeline
+            timeline_keyframes.val = timeline.getTime();
+            // Adding the new keyframe object to the keyframes array of the expressionRow
+            expressionRow.keyframes.push(timeline_keyframes);
+
+            // Updating the timeline's model and generating the HTML outline list nodes
+            timeline.setModel(currentModel);
+            generateHTMLOutlineListNodes(currentModel.rows);
+
+
+            timeline_keyframes.blend_shapes.forEach(blend_shape => {
+                addExpressionKeyframe(blend_shape);
+            });
+        }
+
+    </script>
+</div>

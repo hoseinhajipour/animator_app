@@ -113,9 +113,15 @@
                             });
                         }
                     } else {
+
+
+
                         // If a keyframe with the same 'val' property does not exist, add a new keyframe
-                        expressionRow.keyframes.push({
-                            val: timeline.getTime(),
+
+                        const currentTime = timeline.getTime();
+
+                        const keyframe = {
+                            val: currentTime,
                             shape: 'rhomb',
                             type: 'Expression',
                             blend_shapes: [
@@ -124,7 +130,24 @@
                                     value: value,
                                 }
                             ]
-                        });
+                        };
+
+                        if (currentTime > 0) {
+                            expressionRow.keyframes.push({
+                                val: 0,
+                                shape: 'rhomb',
+                                type: 'Expression',
+                                blend_shapes: [
+                                    {
+                                        name: name,
+                                        value: 0,
+                                    }
+                                ]
+                            });
+                        }
+
+                        expressionRow.keyframes.push(keyframe);
+
                     }
                 } else {
                     // If 'Expression' row doesn't exist, create a new one and add the keyframe
@@ -211,6 +234,7 @@
                 });
 
                 // Set linear tangent mode for all keyframes
+
                 currentkeys.forEach(function (key) {
                     key.inTangent = 0;
                     key.outTangent = 0;
@@ -218,7 +242,21 @@
 
                 morphTargetAnimation.setKeys(currentkeys);
                 FaceAnimationGroup.normalize(0, currentkeys[currentkeys.length - 1].frame);
+
+                console.log("Exsit");
             } else {
+                newMorphTargetKeys = [];
+                if (start > 0) {
+                    newMorphTargetKeys.push({
+                        frame: 0,
+                        value: 0,
+                    });
+                }
+                newMorphTargetKeys.push({
+                    frame: start,
+                    value: blend_shape.value,
+                });
+
                 morphTargetAnimation = new BABYLON.Animation(
                     blend_shape.name,
                     "influence",
@@ -230,9 +268,6 @@
                 Expression.animations.push(morphTargetAnimation);
                 FaceAnimationGroup.addTargetedAnimation(morphTargetAnimation, Expression);
             }
-
-            console.log(Expression);
-
             updateObjectNamesFromScene();
         }
 
