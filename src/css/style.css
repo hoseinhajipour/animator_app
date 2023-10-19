@@ -175,7 +175,7 @@ a {
     border: 3px solid #ff8c00;
 }
 
-.Inspector_limit{
+.Inspector_limit {
     height: 60vh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -186,9 +186,15 @@ a {
     color: black;
     padding: 5px;
 }
-.audio_waveform_gap{
+
+.audio_waveform_gap {
     width: 240px;
 }
-.audio_waveform_length{
 
+.audio_waveform_length {
+
+}
+
+.modal-full {
+    max-width: 90%;
 }

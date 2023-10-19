@@ -105,6 +105,12 @@ const createWindow = () => {
             label: 'Create',
             submenu: [
                 {
+                    label: 'New Character',
+                    click: () => {
+                        mainWindow.webContents.executeJavaScript("OpenAvatarCreator();");
+                    }
+                },
+                {
                     label: 'Cube',
                     click: () => {
                         mainWindow.webContents.executeJavaScript("AddCube();");

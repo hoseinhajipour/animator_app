@@ -1,0 +1,25 @@
+<div class="modal fade " id="LoadingModal" tabindex="-1"
+     data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="LoadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog  ">
+        <div class="modal-content bg-dark">
+            <div class="modal-body text-center">
+
+                <div class="spinner-border text-light" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function OpenLoadingModal() {
+        jQuery('#LoadingModal').modal('show');
+    }
+
+    function CloseLoadingModal() {
+        jQuery('#LoadingModal').modal('hide');
+    }
+</script>
