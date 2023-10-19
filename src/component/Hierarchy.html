@@ -1,21 +1,64 @@
-<div class="alert alert-light text-center p-0">
-    Object List
+<div class="accordion" id="accordionExample">
+
+    <!-- Object List -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="objectListHeading">
+            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#objectListCollapse" aria-expanded="true" aria-controls="objectListCollapse">
+                Object List
+            </button>
+        </h2>
+        <div id="objectListCollapse" class="accordion-collapse collapse show" aria-labelledby="objectListHeading" data-bs-parent="#accordionExample">
+            <div class="accordion-body bg-dark">
+                <ul id="objectList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lights List -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="lightsListHeading">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lightsListCollapse" aria-expanded="false" aria-controls="lightsListCollapse">
+                Lights List
+            </button>
+        </h2>
+        <div id="lightsListCollapse" class="accordion-collapse collapse" aria-labelledby="lightsListHeading" data-bs-parent="#accordionExample">
+            <div class="accordion-body bg-dark">
+                <ul id="lightList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera List -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="cameraListHeading">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cameraListCollapse" aria-expanded="false" aria-controls="cameraListCollapse">
+                Camera List
+            </button>
+        </h2>
+        <div id="cameraListCollapse" class="accordion-collapse collapse" aria-labelledby="cameraListHeading" data-bs-parent="#accordionExample">
+            <div class="accordion-body bg-dark">
+                <ul id="CameraList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Animation Layers -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="animationListHeading">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#animationListCollapse" aria-expanded="false" aria-controls="animationListCollapse">
+                Animation Layers
+            </button>
+        </h2>
+        <div id="animationListCollapse" class="accordion-collapse collapse" aria-labelledby="animationListHeading" data-bs-parent="#accordionExample">
+            <div class="accordion-body bg-dark">
+                <ul id="AnimationList"></ul>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<ul id="objectList"></ul>
-<div class="alert alert-light text-center p-0">
-    Lights List
-</div>
-<ul id="lightList"></ul>
 
-<div class="alert alert-light text-center p-0">
-    Camera List
-</div>
-<ul id="CameraList"></ul>
-<div class="alert alert-light text-center p-0">
-    Animation Layers
-</div>
-<ul id="AnimationList"></ul>
 <script>
     // This function will populate the ul elements with the object names and light names.
     function updateObjectNamesFromScene() {
