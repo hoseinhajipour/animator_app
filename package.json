@@ -1,7 +1,7 @@
 {
   "name": "lipsync-app",
   "productName": "lipsync-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "My Electron application description",
   "main": "src/index.js",
   "scripts": {
@@ -20,6 +20,7 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "jquery": "^3.7.1",
+    "unzipper": "^0.10.14",
     "waveform-data": "^4.3.0",
     "wavesurfer.js": "^7.3.4"
   },
@@ -28,8 +29,10 @@
     "@electron-forge/maker-deb": "^6.4.2",
     "@electron-forge/maker-rpm": "^6.4.2",
     "@electron-forge/maker-squirrel": "^6.4.2",
+    "@electron-forge/maker-wix": "^6.4.2",
     "@electron-forge/maker-zip": "^6.4.2",
     "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
+    "copy-webpack-plugin": "^11.0.0",
     "electron": "^26.3.0"
   }
 }

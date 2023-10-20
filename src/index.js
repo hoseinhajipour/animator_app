@@ -2,7 +2,6 @@ const {app, BrowserWindow, ipcMain, Menu, contextBridge, ipcRenderer, dialog} = 
 const {spawn} = require('child_process');
 const path = require('path');
 const {ExportScene} = require('./js/MainMenu');
-
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
     app.quit();
@@ -10,10 +9,6 @@ if (require('electron-squirrel-startup')) {
 
 
 const createWindow = () => {
-
-
-
-
 
     // Create the browser window.
     const mainWindow = new BrowserWindow({
@@ -172,8 +167,15 @@ const createWindow = () => {
 
     ipcMain.on('run-command', (event, inputAudio) => {
 
-        const command = 'C:\\Rhubarb\\rhubarb.exe';
-  //      const inputAudio = 'c:\\starter.wav'; // Replace this with the actual input audio file path
+
+        const isAsar = __dirname.includes('app.asar');
+        const baseDir = isAsar ? __dirname.replace('app.asar', 'app.asar.unpacked') : __dirname;
+        const command = path.join(baseDir, 'Rhubarb', 'rhubarb.exe');
+
+
+        //  const command =  path.join(__dirname, '\\Rhubarb\\rhubarb.exe')
+        //     const command = 'C:\\Rhubarb\\rhubarb.exe';
+        //      const inputAudio = 'c:\\starter.wav'; // Replace this with the actual input audio file path
         const args = [inputAudio, '-f', 'json'];
 
         const process = spawn(command, args);
@@ -190,8 +192,6 @@ const createWindow = () => {
 
 
     });
-
-
 };
 
 // This method will be called when Electron has finished
