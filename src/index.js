@@ -12,9 +12,7 @@ const createWindow = () => {
 
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        width: 1920,
-        height: 1080,
-        webPreferences: {
+        width: 1920, height: 1080, webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
             webSecurity: false,
@@ -22,121 +20,70 @@ const createWindow = () => {
         },
     });
 
-    const template = [
-        {
-            label: 'File',
-            submenu: [
-                {
-                    label: 'New',
-                    accelerator: 'CmdOrCtrl+N',
-                    click: () => {
-                        // Logic for new file action
-                        mainWindow.webContents.executeJavaScript("location.reload();");
-                    }
-                },
-                {
-                    label: 'Open',
-                    accelerator: 'CmdOrCtrl+O',
-                    click: () => {
-                        // Logic for open file action
-                    }
-                },
-                {
-                    label: 'Import',
-                    accelerator: 'CmdOrCtrl+I',
-                    click: () => {
-                        mainWindow.webContents.executeJavaScript(" ImportModel();");
-                    }
-                },
-                {
-                    label: 'Export',
-                    accelerator: 'CmdOrCtrl+E',
-                    click: () => {
-                        mainWindow.webContents.executeJavaScript("ExportScene();");
-                    }
-                },
-                {
-                    type: 'separator'
-                },
-                {
-                    label: 'Quit',
-                    accelerator: 'CmdOrCtrl+Q',
-                    click: () => {
-                        app.quit();
-                    }
-                }
-            ]
-        },
-        {
-            label: 'Edit',
-            submenu: [
-                {
-                    label: 'Cut',
-                    accelerator: 'CmdOrCtrl+X',
-                    role: 'cut'
-                },
-                {
-                    label: 'Copy',
-                    accelerator: 'CmdOrCtrl+C',
-                    role: 'copy'
-                },
-                {
-                    label: 'Paste',
-                    accelerator: 'CmdOrCtrl+V',
-                    role: 'paste'
-                },
-                {
-                    type: 'separator'
-                },
-                {
-                    label: 'Preference',
-                    click: () => {
-                        mainWindow.webContents.executeJavaScript("OpenPreference();");
-                    }
-                },
-            ]
-        },
-        {
-            label: 'Create',
-            submenu: [
-                {
-                    label: 'New Character',
-                    click: () => {
-                        mainWindow.webContents.executeJavaScript("OpenAvatarCreator();");
-                    }
-                },
-                {
-                    label: 'Cube',
-                    click: () => {
-                        mainWindow.webContents.executeJavaScript("AddCube();");
-                    }
-                },
-                {
-                    label: 'Camera',
-                    click: () => {
-                        mainWindow.webContents.executeJavaScript("AddCamera();");
-                    }
-                }
-            ]
-        },
-        {
-            label: 'Render',
-            submenu: [
-                {
-                    label: 'Render Video',
-                    click: () => {
-                        mainWindow.webContents.executeJavaScript("RenderMovie();");
-                    }
-                },
-                {
-                    label: 'Render Image',
-                    click: () => {
+    const template = [{
+        label: 'File', submenu: [{
+            label: 'New', accelerator: 'CmdOrCtrl+N', click: () => {
+                // Logic for new file action
+                mainWindow.webContents.executeJavaScript("location.reload();");
+            }
+        }, {
+            label: 'Open', accelerator: 'CmdOrCtrl+O', click: () => {
+                // Logic for open file action
+            }
+        }, {
+            label: 'Import', accelerator: 'CmdOrCtrl+I', click: () => {
+                mainWindow.webContents.executeJavaScript(" ImportModel();");
+            }
+        }, {
+            label: 'Export', accelerator: 'CmdOrCtrl+E', click: () => {
+                mainWindow.webContents.executeJavaScript("ExportScene();");
+            }
+        }, {
+            type: 'separator'
+        }, {
+            label: 'Quit', accelerator: 'CmdOrCtrl+Q', click: () => {
+                app.quit();
+            }
+        }]
+    }, {
+        label: 'Edit', submenu: [{
+            label: 'Cut', accelerator: 'CmdOrCtrl+X', role: 'cut'
+        }, {
+            label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy'
+        }, {
+            label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste'
+        }, {
+            type: 'separator'
+        }, {
+            label: 'Preference', click: () => {
+                mainWindow.webContents.executeJavaScript("OpenPreference();");
+            }
+        },]
+    }, {
+        label: 'Create', submenu: [{
+            label: 'New Character', click: () => {
+                mainWindow.webContents.executeJavaScript("OpenAvatarCreator();");
+            }
+        }, {
+            label: 'Cube', click: () => {
+                mainWindow.webContents.executeJavaScript("AddCube();");
+            }
+        }, {
+            label: 'Camera', click: () => {
+                mainWindow.webContents.executeJavaScript("AddCamera();");
+            }
+        }]
+    }, {
+        label: 'Render', submenu: [{
+            label: 'Render Video', click: () => {
+                mainWindow.webContents.executeJavaScript("RenderMovie();");
+            }
+        }, {
+            label: 'Render Image', click: () => {
 
-                    }
-                }
-            ]
-        }
-    ];
+            }
+        }]
+    }];
 
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
@@ -145,11 +92,7 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
     var splash = new BrowserWindow({
-        width: 960,
-        height: 540,
-        transparent: true,
-        frame: false,
-        alwaysOnTop: true
+        width: 960, height: 540, transparent: true, frame: false, alwaysOnTop: true
     });
     splash.loadFile(path.join(__dirname, 'splash.html'));
     splash.center();
@@ -169,13 +112,19 @@ const createWindow = () => {
 
 
         const isAsar = __dirname.includes('app.asar');
-        const baseDir = isAsar ? __dirname.replace('app.asar', 'app.asar.unpacked') : __dirname;
-        const command = path.join(baseDir, 'Rhubarb', 'rhubarb.exe');
 
+        var command="";
+        if (isAsar) {
+            const baseDir = isAsar ? __dirname.replace('app.asar', '') : __dirname;
+            command = path.join(baseDir, 'Rhubarb', 'rhubarb.exe');
+            mainWindow.webContents.executeJavaScript("console.log('" + baseDir + "');");
+            mainWindow.webContents.executeJavaScript("console.log('" + command + "');");
 
-        //  const command =  path.join(__dirname, '\\Rhubarb\\rhubarb.exe')
-        //     const command = 'C:\\Rhubarb\\rhubarb.exe';
-        //      const inputAudio = 'c:\\starter.wav'; // Replace this with the actual input audio file path
+        } else {
+            command = 'C:\\Rhubarb\\rhubarb.exe';
+        }
+
+        //const command =  path.join(__dirname, '\\Rhubarb\\rhubarb.exe')
         const args = [inputAudio, '-f', 'json'];
 
         const process = spawn(command, args);

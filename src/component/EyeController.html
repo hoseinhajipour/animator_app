@@ -1,7 +1,10 @@
 <b>Head Lookat Mouse</b>
 <br/>
-
-<button id="toggleEyeButton" class="btn btn-primary form-control" onclick="toggleEyeMovement()">Start</button>
+<input id="allow_eye_lookat" type="checkbox" checked>
+<label>Eye Look at</label>
+<input id="allow_head_lookat" type="checkbox">
+<label>Head Look at</label>
+<button id="toggleHeadButton" class="btn btn-primary form-control" onclick="toggleHeadMovement()">Start</button>
 
 
 <script>
@@ -9,30 +12,33 @@
     var eyeRightBone = null;
     var headBone = null;
     var HeadLookAtAnimationGroup;
-    var currentHeadboneKeys = [];
     var headtransformNode;
     var lookAtCtl;
+    var HeadLookat = false;
+
+
+    var currentHeadboneKeys = [];
+    var currentLeftEyeKeys = [];
+    var currentRightEyeKeys = [];
 
     // Function to Generate Random Rotation Values
-
-
-    function toggleEyeMovement() {
+    function toggleHeadMovement() {
         if (HeadMesh) {
-            eyeLookat = !eyeLookat;
-            if (eyeLookat) {
-                starteyeButton();
+            HeadLookat = !HeadLookat;
+            if (HeadLookat) {
+                startHeadButton();
 
             } else {
-                stopeyeButton();
+                stopHeadButton();
 
             }
         }
     }
 
-    function starteyeButton() {
-        eyeLookat = true;
+    function startHeadButton() {
+        HeadLookat = true;
 
-        var buttonElement = document.getElementById("toggleEyeButton");
+        var buttonElement = document.getElementById("toggleHeadButton");
         buttonElement.blur();
         buttonElement.innerText = "Stop";
         buttonElement.classList.remove("btn-primary");
@@ -100,35 +106,78 @@
         headtransformNode.rotationQuaternion = BABYLON.Quaternion.Slerp(currentQuaternion, targetQuaternion, 0.1); // Adjust the 0.1 value for desired smoothness
     }
 
+    function makeEyesLookAt(targetPosition) {
+        // Calculate the direction towards the target
+        var dir = targetPosition.subtract(eyeLeftBone.getTransformNode().position).normalize();
+        var up = new BABYLON.Vector3(0, 1, 0);  // Up direction
+        var right = BABYLON.Vector3.Cross(up, dir).normalize();
+        up = BABYLON.Vector3.Cross(dir, right).normalize();
+
+        var worldMatrix = BABYLON.Matrix.FromValues(
+            right.x, up.x, dir.x, 0,
+            right.y, up.y, dir.y, 0,
+            right.z, up.z, dir.z, 0,
+            0, 0, 0, 1
+        );
+
+        var currentLeftEyeQuaternion = eyeLeftBone.getTransformNode().rotationQuaternion;
+        var targetLeftEyeQuaternion = BABYLON.Quaternion.FromRotationMatrix(worldMatrix);
+        var currentRightEyeQuaternion = eyeRightBone.getTransformNode().rotationQuaternion;
+        var targetRightEyeQuaternion = BABYLON.Quaternion.FromRotationMatrix(worldMatrix);
+
+        eyeLeftBone.getTransformNode().rotationQuaternion = BABYLON.Quaternion.Slerp(currentLeftEyeQuaternion, targetLeftEyeQuaternion, 0.1);
+        eyeRightBone.getTransformNode().rotationQuaternion = BABYLON.Quaternion.Slerp(currentRightEyeQuaternion, targetRightEyeQuaternion, 0.1);
+    }
+
 
     canvas.addEventListener("mousemove", function (event) {
-        if (eyeLookat) {
+        if (HeadLookat) {
             var pickInfo = scene.pick(scene.pointerX, scene.pointerY);
             if (pickInfo.hit) {
                 var targetPosition = pickInfo.pickedPoint;
-                //     targetPosition.y = headtransformNode.position.y;
 
-                makeHeadLookAt(targetPosition);
+                if (document.getElementById('allow_head_lookat').checked) {
+                    makeHeadLookAt(targetPosition);
+                }
+
+                if (document.getElementById('allow_eye_lookat').checked) {
+                    makeEyesLookAt(targetPosition);
+                }
 
                 if (playing) {
                     // record animation
                     // each frame set keyframe for headBone
                     var frame = millisecondsToFrames(timeline.getTime());
-                    currentHeadboneKeys.push({frame: frame, value: headtransformNode.rotationQuaternion});
+
+                    if (document.getElementById('allow_head_lookat').checked) {
+                        currentHeadboneKeys.push({frame: frame, value: headtransformNode.rotationQuaternion});
+                    }
+
+                    if (document.getElementById('allow_eye_lookat').checked) {
+                        currentLeftEyeKeys.push({
+                            frame: frame,
+                            value: eyeLeftBone.getTransformNode().rotationQuaternion
+                        });
+                        currentRightEyeKeys.push({
+                            frame: frame,
+                            value: eyeRightBone.getTransformNode().rotationQuaternion
+                        });
+                    }
                 }
             }
         }
     });
 
 
-    function stopeyeButton() {
-        eyeLookat = false;
-        var buttonElement = document.getElementById("toggleEyeButton");
+    function stopHeadButton() {
+        HeadLookat = false;
+        var buttonElement = document.getElementById("toggleHeadButton");
         buttonElement.innerText = "Start";
         buttonElement.classList.remove("btn-danger");
         buttonElement.classList.add("btn-primary");
 
         GenerateHeadboneKeyframe();
+        GenerateEyeBoneKeyframes();
     }
 
     function GenerateHeadboneKeyframe() {
@@ -171,6 +220,65 @@
         }
     }
 
+    function GenerateEyeBoneKeyframes() {
+        if (currentLeftEyeKeys.length > 0 && currentRightEyeKeys.length > 0) {
+            currentLeftEyeKeys = removeDuplicateFrames(currentLeftEyeKeys);
+            currentRightEyeKeys = removeDuplicateFrames(currentRightEyeKeys);
+
+            var leftEyeAnimation = new BABYLON.Animation(
+                "leftEye_lookat_animation",
+                "rotationQuaternion",
+                frameRate,
+                BABYLON.Animation.ANIMATIONTYPE_QUATERNION
+            );
+
+            var rightEyeAnimation = new BABYLON.Animation(
+                "rightEye_lookat_animation",
+                "rotationQuaternion",
+                frameRate,
+                BABYLON.Animation.ANIMATIONTYPE_QUATERNION
+            );
+
+            // Interpolate keyframes for smoother animation
+            var easingFunction = new BABYLON.QuadraticEase();
+            easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+            leftEyeAnimation.setEasingFunction(easingFunction);
+            rightEyeAnimation.setEasingFunction(easingFunction);
+
+            var leftEyeKeys = [];
+            var rightEyeKeys = [];
+
+            for (var i = 0; i < currentLeftEyeKeys.length; i++) {
+                leftEyeKeys.push({
+                    frame: currentLeftEyeKeys[i].frame,
+                    value: currentLeftEyeKeys[i].value
+                });
+            }
+
+            for (var i = 0; i < currentRightEyeKeys.length; i++) {
+                rightEyeKeys.push({
+                    frame: currentRightEyeKeys[i].frame,
+                    value: currentRightEyeKeys[i].value
+                });
+            }
+
+            leftEyeAnimation.setKeys(leftEyeKeys);
+            rightEyeAnimation.setKeys(rightEyeKeys);
+
+            eyeLeftBone.getTransformNode().animations.push(leftEyeAnimation);
+            eyeRightBone.getTransformNode().animations.push(rightEyeAnimation);
+
+            // Apply animation to the eye bones
+            HeadLookAtAnimationGroup.addTargetedAnimation(leftEyeAnimation, eyeLeftBone.getTransformNode());
+            HeadLookAtAnimationGroup.addTargetedAnimation(rightEyeAnimation, eyeRightBone.getTransformNode());
+
+            HeadLookAtAnimationGroup.normalize(0, Math.max(currentLeftEyeKeys[currentLeftEyeKeys.length - 1].frame, currentRightEyeKeys[currentRightEyeKeys.length - 1].frame));
+
+            // Adjust this function to handle eye bone keyframes as well
+          //  HeadLookAtapplyToTimeline();
+        }
+    }
+
 
     function HeadLookAtapplyToTimeline() {
 
@@ -206,7 +314,7 @@
 
     document.addEventListener("keydown", function (event) {
         if (event.key === "Escape") {
-            stopeyeButton();
+            stopHeadButton();
         }
     });
 </script>

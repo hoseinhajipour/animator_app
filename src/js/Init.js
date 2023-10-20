@@ -18,7 +18,7 @@ var BodyMesh;
 var EyeLeftMesh;
 var EyeRightMesh;
 
-var eyeLookat = false;
+
 
 var Eye_Blink_Left_blendshape_name="eyeBlinkLeft";
 var Eye_Blink_Right_blendshape_name="eyeBlinkRight";
