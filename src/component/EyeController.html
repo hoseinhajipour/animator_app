@@ -2,10 +2,10 @@
 <br/>
 <input id="allow_eye_lookat" type="checkbox" checked>
 <label>Eye Look at</label>
-<input id="allow_head_lookat" type="checkbox">
+<input id="allow_head_lookat" type="checkbox" checked>
 <label>Head Look at</label>
 <button id="toggleHeadButton" class="btn btn-primary form-control" onclick="toggleHeadMovement()">Start</button>
-
+<button class="btn btn-primary form-control my-1" onclick="ResetHeadRot()">Reset Head Roation</button>
 
 <script>
     var eyeLeftBone = null;
@@ -20,6 +20,17 @@
     var currentHeadboneKeys = [];
     var currentLeftEyeKeys = [];
     var currentRightEyeKeys = [];
+
+    var initHeadRot;
+    var initEyeLeftRot;
+    var initEyeRightRot;
+
+    function ResetHeadRot() {
+        headtransformNode.rotationQuaternion = initHeadRot;
+
+        eyeLeftBone.getTransformNode().rotationQuaternion = initEyeLeftRot;
+        eyeRightBone.getTransformNode().rotationQuaternion = initEyeRightRot;
+    }
 
     // Function to Generate Random Rotation Values
     function toggleHeadMovement() {
@@ -66,7 +77,8 @@
 
             if (HeadLookAtAnimationGroup) {
                 HeadLookAtAnimationGroup.dispose();
-                headtransformNode.animations.dispose();
+                eyeLeftBone.getTransformNode().animations.dispose();
+                eyeRightBone.getTransformNode().animations.dispose();
             }
 
             // Create a new FaceAnimationGroup
@@ -76,6 +88,11 @@
             HeadLookAtAnimationGroup.enableBlending = true;
 
             currentHeadboneKeys = [];
+
+
+            initHeadRot = headtransformNode.rotationQuaternion;
+            initEyeLeftRot = eyeLeftBone.getTransformNode().rotationQuaternion;
+            initEyeRightRot = eyeRightBone.getTransformNode().rotationQuaternion;
 
             updateObjectNamesFromScene();
         }
@@ -107,9 +124,29 @@
     }
 
     function makeEyesLookAt(targetPosition) {
-        // Calculate the direction towards the target
-        var dir = targetPosition.subtract(eyeLeftBone.getTransformNode().position).normalize();
-        var up = new BABYLON.Vector3(0, 1, 0);  // Up direction
+        var eyeTransform = eyeLeftBone.getTransformNode();
+
+        // Initial forward direction (assuming the eyes initially look along the Z-axis; adjust if needed)
+        var initialDirection = new BABYLON.Vector3(0, 0, 1);
+        var dir = targetPosition.subtract(eyeTransform.position).normalize();
+
+        // Calculate the angle between the initial direction and the target direction
+        var angle = Math.acos(BABYLON.Vector3.Dot(initialDirection, dir));
+
+        // Clamp the direction if the angle is greater than 30 degrees
+        var maxAngle = BABYLON.Tools.ToRadians(30); // Convert 30 degrees to radians
+
+        if (angle > maxAngle) {
+            var axis = BABYLON.Vector3.Cross(initialDirection, dir).normalize();
+            var quaternion = BABYLON.Quaternion.RotationAxis(axis, maxAngle);
+
+            var rotationMatrix = new BABYLON.Matrix();
+            BABYLON.Matrix.FromQuaternionToRef(quaternion, rotationMatrix);
+            dir = BABYLON.Vector3.TransformNormal(initialDirection, rotationMatrix);
+        }
+
+        // Rest of your code to compute the world matrix and set the rotation quaternion for the eyes
+        var up = new BABYLON.Vector3(0, 1, 0);
         var right = BABYLON.Vector3.Cross(up, dir).normalize();
         up = BABYLON.Vector3.Cross(dir, right).normalize();
 
@@ -120,8 +157,10 @@
             0, 0, 0, 1
         );
 
-        var currentLeftEyeQuaternion = eyeLeftBone.getTransformNode().rotationQuaternion;
+        var currentLeftEyeQuaternion = eyeTransform.rotationQuaternion;
         var targetLeftEyeQuaternion = BABYLON.Quaternion.FromRotationMatrix(worldMatrix);
+
+        // Applying the same rotation to the right eye for consistency
         var currentRightEyeQuaternion = eyeRightBone.getTransformNode().rotationQuaternion;
         var targetRightEyeQuaternion = BABYLON.Quaternion.FromRotationMatrix(worldMatrix);
 
@@ -275,7 +314,7 @@
             HeadLookAtAnimationGroup.normalize(0, Math.max(currentLeftEyeKeys[currentLeftEyeKeys.length - 1].frame, currentRightEyeKeys[currentRightEyeKeys.length - 1].frame));
 
             // Adjust this function to handle eye bone keyframes as well
-          //  HeadLookAtapplyToTimeline();
+            //  HeadLookAtapplyToTimeline();
         }
     }
 
